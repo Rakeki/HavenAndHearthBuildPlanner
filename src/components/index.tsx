@@ -122,8 +122,8 @@ export const PlannerCanvas: React.FC<any> = ({
       }
       render();
     }
-    // Handle buildable drag
-    else if (selection.selectedBuildable) {
+    // Handle buildable drag (non-line tool items)
+    else if (selection.selectedBuildable && !selection.selectedBuildable.usesLineTool) {
       setIsDragging(true);
       setLastPlacedCell(pos);
       setStateChanged(true);
@@ -144,6 +144,33 @@ export const PlannerCanvas: React.FC<any> = ({
     // Handle measurement preview
     if (measurementTool.isToolActive() && measurementTool.getFirstPoint() && !measurementTool.getSecondPoint()) {
       render(selection.selectedPlaced, pos);
+      return;
+    }
+
+    // Handle line tool preview
+    if (selection.selectedBuildable && selection.selectedBuildable.usesLineTool) {
+      if (selection.lineTool.isActive()) {
+        // Update line preview
+        selection.lineTool.updateEndPoint(pos);
+        render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid: true }, selection.lineTool);
+      } else {
+        // Show single item preview at cursor
+        const isValid = gridManager.canPlaceItem(pos.x, pos.y, 1, 1, null);
+        render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid });
+      }
+      return;
+    }
+
+    // Show buildable preview at cursor when buildable is selected (and not dragging)
+    if (!isDragging && selection.selectedBuildable) {
+      const isValid = gridManager.canPlaceItem(
+        pos.x,
+        pos.y,
+        selection.selectedBuildable.width,
+        selection.selectedBuildable.height,
+        null
+      );
+      render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid });
       return;
     }
 
@@ -170,8 +197,8 @@ export const PlannerCanvas: React.FC<any> = ({
       }
       render();
     }
-    // Handle buildable drag
-    else if (isDragging && selection.selectedBuildable && lastPlacedCell) {
+    // Handle buildable drag (non-line tool items)
+    else if (isDragging && selection.selectedBuildable && !selection.selectedBuildable.usesLineTool && lastPlacedCell) {
       // Only place if we moved to a different cell
       if (pos.x !== lastPlacedCell.x || pos.y !== lastPlacedCell.y) {
         const newItem = selection.selectedBuildable.createPlacedItem(pos.x, pos.y);
@@ -181,6 +208,17 @@ export const PlannerCanvas: React.FC<any> = ({
           setLastPlacedCell(pos);
         }
       }
+    }
+    // Show preview when just hovering with selected buildable
+    else if (selection.selectedBuildable) {
+      const isValid = gridManager.canPlaceItem(
+        pos.x,
+        pos.y,
+        selection.selectedBuildable.width,
+        selection.selectedBuildable.height,
+        null
+      );
+      render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid });
     }
   };
 
@@ -211,6 +249,42 @@ export const PlannerCanvas: React.FC<any> = ({
         measurementTool.setFirstPoint(pos);
       }
       render();
+      return;
+    }
+
+    // Handle line tool for fences/walls/palisades
+    if (selection.selectedBuildable && selection.selectedBuildable.usesLineTool) {
+      if (!selection.lineTool.isActive()) {
+        // Start new line
+        selection.lineTool.startLine(pos);
+        setStateChanged(true);
+        render();
+      } else if (selection.lineTool.isCornerPoint(pos)) {
+        // Extend line from current endpoint
+        selection.lineTool.extendLine(pos);
+        render();
+      } else {
+        // Complete the line and place all items
+        const allCells = selection.lineTool.getAllCells();
+        let placedCount = 0;
+        
+        for (const cell of allCells) {
+          const newItem = selection.selectedBuildable.createPlacedItem(cell.x, cell.y);
+          if (gridManager.addItem(newItem)) {
+            newItem.preloadImage().then(() => render());
+            placedCount++;
+          }
+        }
+        
+        if (placedCount > 0) {
+          if (onStateChange) onStateChange();
+          render();
+        }
+        
+        // Reset line tool for next line
+        selection.lineTool.reset();
+        setStateChanged(false);
+      }
       return;
     }
 

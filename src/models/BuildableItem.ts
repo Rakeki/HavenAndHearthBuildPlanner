@@ -91,6 +91,7 @@ export class PlacedItem {
   public readonly color: string;
   public readonly image?: string;
   public readonly imageUrl?: string;
+  public readonly usesLineTool: boolean;
   private imageElement?: HTMLImageElement;
 
   constructor(data: PlacedItemData, imageElement?: HTMLImageElement) {
@@ -103,6 +104,7 @@ export class PlacedItem {
     this.color = data.color;
     this.image = data.image;
     this.imageUrl = data.imageUrl;
+    this.usesLineTool = data.usesLineTool || false;
     this.imageElement = imageElement;
   }
 

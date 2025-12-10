@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PlacedItem, BuildableItem } from '@models/BuildableItem';
 import { PavingType } from '@models/PavingManager';
 import { ShapeMode } from '@models/types';
+import { LineTool } from '@models/LineTool';
 
 export function useSelection() {
   const [selectedBuildable, setSelectedBuildable] = useState<BuildableItem | null>(null);
@@ -9,6 +10,7 @@ export function useSelection() {
   const [selectedPaving, setSelectedPaving] = useState<PavingType | null>(null);
   const [erasePavingMode, setErasePavingMode] = useState(false);
   const [pavingShapeMode, setPavingShapeMode] = useState<ShapeMode>('line');
+  const [lineTool] = useState(() => new LineTool());
 
   const selectBuildable = (item: BuildableItem | null) => {
     setSelectedBuildable(item);
@@ -17,6 +19,11 @@ export function useSelection() {
       setSelectedPaving(null);
       setErasePavingMode(false);
       setSelectedPlaced(null);
+      
+      // Reset line tool when selecting non-line buildables
+      if (!item.usesLineTool) {
+        lineTool.reset();
+      }
     }
   };
 
@@ -27,6 +34,7 @@ export function useSelection() {
       // Clear paving selections when selecting a placed item
       setSelectedPaving(null);
       setErasePavingMode(false);
+      lineTool.reset();
     }
   };
 
@@ -37,6 +45,7 @@ export function useSelection() {
       setSelectedBuildable(null);
       setSelectedPlaced(null);
       setErasePavingMode(false);
+      lineTool.reset();
     }
   };
 
@@ -46,6 +55,7 @@ export function useSelection() {
       setSelectedPaving(null);
       setSelectedBuildable(null);
       setSelectedPlaced(null);
+      lineTool.reset();
     }
   };
 
@@ -54,6 +64,7 @@ export function useSelection() {
     setSelectedPlaced(null);
     setSelectedPaving(null);
     setErasePavingMode(false);
+    lineTool.reset();
   };
 
   const setShapeMode = (mode: ShapeMode) => {
@@ -66,6 +77,7 @@ export function useSelection() {
     selectedPaving,
     erasePavingMode,
     pavingShapeMode,
+    lineTool,
     selectBuildable,
     selectPlaced,
     selectPaving,

@@ -69,7 +69,12 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
   }, [gridSize]);
 
   const render = useCallback(
-    (selectedItem: PlacedItem | null = null, previewPoint?: Point) => {
+    (
+      selectedItem: PlacedItem | null = null, 
+      previewPoint?: Point, 
+      previewBuildable?: { buildable: any, isValid: boolean },
+      lineTool?: any
+    ) => {
       if (!renderer) return;
 
       renderer.clear();
@@ -81,6 +86,25 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
       // Draw measurement if active
       if (measurementTool.isToolActive()) {
         renderer.drawMeasurement(measurementTool, previewPoint);
+      }
+
+      // Draw line tool preview if active
+      if (lineTool?.isActive && lineTool.isActive() && previewBuildable?.buildable) {
+        renderer.drawLineTool(lineTool, previewBuildable.buildable, gridManager);
+      }
+      // Draw buildable preview if available (for non-line tools)
+      else if (previewBuildable && previewPoint && !previewBuildable.buildable?.usesLineTool) {
+        const img = previewBuildable.buildable.getImageElement?.();
+        renderer.drawItemPreview(
+          previewPoint.x,
+          previewPoint.y,
+          previewBuildable.buildable.width,
+          previewBuildable.buildable.height,
+          previewBuildable.buildable.color,
+          previewBuildable.isValid,
+          img,
+          previewBuildable.buildable.name
+        );
       }
     },
     [renderer, gridManager, pavingManager, measurementTool, showBuildables]

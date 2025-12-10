@@ -1,0 +1,1851 @@
+[
+  {
+    "name": "Alchemist%27s Table",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Alchemist%27s_Table.png",
+    "imageUrl": "https://ringofbrodgar.com/images/d/d5/Alchemist%27s_Table.png"
+  },
+  {
+    "name": "Ancestral Shrine",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Ancestral_Shrine.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/31/Ancestral_Shrine.png"
+  },
+  {
+    "name": "Anvil",
+    "category": "crafting",
+    "width": 1,
+    "height": 1,
+    "color": "#DC143C",
+    "image": "images/320px-Anvil.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/d/dd/Anvil.png/320px-Anvil.png"
+  },
+  {
+    "name": "Arched Chair",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Arched_Chair.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/9a/Arched_Chair.png"
+  },
+  {
+    "name": "Archery Target",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Archery_Target.png",
+    "imageUrl": "https://ringofbrodgar.com/images/c/cd/Archery_Target.png"
+  },
+  {
+    "name": "Archery Tower",
+    "category": "housing",
+    "width": 1,
+    "height": 1,
+    "color": "#A0522D",
+    "image": "images/220px-Archery_Tower.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/a/a6/Archery_Tower.png/220px-Archery_Tower.png"
+  },
+  {
+    "name": "Barrel",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Barrel.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/a1/Barrel.png"
+  },
+  {
+    "name": "Barter Pole",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/320px-Barter_Pole.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/3/30/Barter_Pole.png/320px-Barter_Pole.png"
+  },
+  {
+    "name": "Barter Stand",
+    "category": "other",
+    "width": 2,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Barter_Stand.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/eb/Barter_Stand.png"
+  },
+  {
+    "name": "Battering Ram",
+    "category": "defense",
+    "width": 2,
+    "height": 4,
+    "color": "#696969",
+    "image": "images/Battering_Ram.png",
+    "imageUrl": "https://ringofbrodgar.com/images/d/d9/Battering_Ram.png"
+  },
+  {
+    "name": "Bee Skep",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Bee_Skep.png",
+    "imageUrl": "https://ringofbrodgar.com/images/1/10/Bee_Skep.png"
+  },
+  {
+    "name": "Bell Fountain",
+    "category": "decoration",
+    "width": 1,
+    "height": 1,
+    "color": "#FFD700",
+    "image": "images/Bell_Fountain.png",
+    "imageUrl": "https://ringofbrodgar.com/images/6/65/Bell_Fountain.png"
+  },
+  {
+    "name": "Birchbark Basket",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Birchbark_Basket.png",
+    "imageUrl": "https://ringofbrodgar.com/images/c/ce/Birchbark_Basket.png"
+  },
+  {
+    "name": "Birdhouse",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/150px-Birdhouse.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/6/6d/Birdhouse.png/150px-Birdhouse.png"
+  },
+  {
+    "name": "Bone Chest",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Bone_Chest.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/94/Bone_Chest.png"
+  },
+  {
+    "name": "Bonfire",
+    "category": "other",
+    "width": 2,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/Bonfire.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/9/90/Bonfire.jpg"
+  },
+  {
+    "name": "Border Cairn",
+    "category": "other",
+    "width": 3,
+    "height": 3,
+    "color": "#808080",
+    "image": "images/Border_Cairn.png",
+    "imageUrl": "https://ringofbrodgar.com/images/d/d8/Border_Cairn.png"
+  },
+  {
+    "name": "Bough Pyre",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Bough_Pyre.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/93/Bough_Pyre.png"
+  },
+  {
+    "name": "Brazier",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Brazier.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b0/Brazier.png"
+  },
+  {
+    "name": "Brickwall",
+    "category": "defense",
+    "width": 1,
+    "height": 1,
+    "color": "#696969",
+    "image": "images/Brickwall.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/9/94/Brickwall.jpg",
+    "usesLineTool": true
+  },
+  {
+    "name": "Candelabrum",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Candelabrum.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/48/Candelabrum.png"
+  },
+  {
+    "name": "Carpet",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Carpet.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/54/Carpet.png"
+  },
+  {
+    "name": "Cart",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/320px-Cart.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/2/2b/Cart.png/320px-Cart.png"
+  },
+  {
+    "name": "Catapult",
+    "category": "other",
+    "width": 2,
+    "height": 3,
+    "color": "#808080",
+    "image": "images/Catapult.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/51/Catapult.png"
+  },
+  {
+    "name": "Cattle",
+    "category": "other",
+    "width": 1,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/320px-Cattle.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/1/11/Cattle.png/320px-Cattle.png"
+  },
+  {
+    "name": "Cauldron",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Metal-Cauldron.png",
+    "imageUrl": "https://ringofbrodgar.com/images/6/6b/Metal-Cauldron.png"
+  },
+  {
+    "name": "Charter Stone",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Charter_Stone.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/0a/Charter_Stone.png"
+  },
+  {
+    "name": "Cheese Rack",
+    "category": "crafting",
+    "width": 1,
+    "height": 1,
+    "color": "#DC143C",
+    "image": "images/Cheese_Rack.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b1/Cheese_Rack.png"
+  },
+  {
+    "name": "Chicken Coop",
+    "category": "storage",
+    "width": 2,
+    "height": 2,
+    "color": "#8B4513",
+    "image": "images/Chicken_Coop.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/2e/Chicken_Coop.png"
+  },
+  {
+    "name": "Churn",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Churn.png",
+    "imageUrl": "https://ringofbrodgar.com/images/d/d4/Churn.png"
+  },
+  {
+    "name": "Cistern",
+    "category": "storage",
+    "width": 2,
+    "height": 2,
+    "color": "#8B4513",
+    "image": "images/320px-Cistern.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/4/45/Cistern.png/320px-Cistern.png"
+  },
+  {
+    "name": "Clay Cauldron",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Clay_Cauldron.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e1/Clay_Cauldron.png"
+  },
+  {
+    "name": "Cloth Armchair",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Cloth_Armchair.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/0f/Cloth_Armchair.png"
+  },
+  {
+    "name": "Cloth Chair",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Cloth_Chair.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3b/Cloth_Chair.png"
+  },
+  {
+    "name": "Cloth Footstool",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Cloth_Footstool.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/40/Cloth_Footstool.png"
+  },
+  {
+    "name": "Coffer",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Coffer.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/90/Coffer.png"
+  },
+  {
+    "name": "Coinpress",
+    "category": "crafting",
+    "width": 1,
+    "height": 1,
+    "color": "#DC143C",
+    "image": "images/233px-Coinpress.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/7/7b/Coinpress.png/233px-Coinpress.png"
+  },
+  {
+    "name": "Compost Bin",
+    "category": "agriculture",
+    "width": 1,
+    "height": 1,
+    "color": "#228B22",
+    "image": "images/Compost_Bin.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e1/Compost_Bin.png"
+  },
+  {
+    "name": "Conch Chair",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Conch_Chair.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e5/Conch_Chair.png"
+  },
+  {
+    "name": "Coronation Stone",
+    "category": "other",
+    "width": 6,
+    "height": 6,
+    "color": "#808080",
+    "image": "images/306px-Coronation_Stone.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f3/Coronation_Stone.png/306px-Coronation_Stone.png"
+  },
+  {
+    "name": "Cottage Table",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Cottage_Table.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/ea/Cottage_Table.png"
+  },
+  {
+    "name": "Cottage Throne",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Cottage_Throne.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/a9/Cottage_Throne.png"
+  },
+  {
+    "name": "Crate",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Crate.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/4f/Crate.png"
+  },
+  {
+    "name": "Crop Circle",
+    "category": "other",
+    "width": 5,
+    "height": 5,
+    "color": "#808080",
+    "image": "images/Crop_Circle.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/5d/Crop_Circle.png"
+  },
+  {
+    "name": "Crucible",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Crucible.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/31/Crucible.png"
+  },
+  {
+    "name": "Cupboard",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Cupboard.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/a3/Cupboard.png"
+  },
+  {
+    "name": "Curding Tub",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Curding_Tub.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b7/Curding_Tub.png"
+  },
+  {
+    "name": "Cushioned Bench",
+    "category": "furniture",
+    "width": 2,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/320px-Cushioned_Bench.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/3/3e/Cushioned_Bench.png/320px-Cushioned_Bench.png"
+  },
+  {
+    "name": "Cushioned Stool",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Cushioned_Stool.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/8b/Cushioned_Stool.png"
+  },
+  {
+    "name": "Demijohn",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Demijohn.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/89/Demijohn.png"
+  },
+  {
+    "name": "Display Case",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Display_Case.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/8b/Display_Case.png"
+  },
+  {
+    "name": "Display Sign",
+    "category": "decoration",
+    "width": 1,
+    "height": 1,
+    "color": "#FFD700",
+    "image": "images/Display_Sign.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/05/Display_Sign.png"
+  },
+  {
+    "name": "Dovecote",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/172px-Dovecote.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/e/e8/Dovecote.png/172px-Dovecote.png"
+  },
+  {
+    "name": "Dream Catcher",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Dream_Catcher.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/31/Dream_Catcher.png"
+  },
+  {
+    "name": "Dressing Table",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Dressing_Table.png",
+    "imageUrl": "https://ringofbrodgar.com/images/f/f5/Dressing_Table.png"
+  },
+  {
+    "name": "Dry Stone Fence",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Dry_Stone_Fence.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/58/Dry_Stone_Fence.png",
+    "usesLineTool": true
+  },
+  {
+    "name": "Drying Frame",
+    "category": "defense",
+    "width": 2,
+    "height": 1,
+    "color": "#696969",
+    "image": "images/Drying_Frame.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/ab/Drying_Frame.png"
+  },
+  {
+    "name": "Dugout",
+    "category": "other",
+    "width": 1,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/Dugout.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/95/Dugout.png"
+  },
+  {
+    "name": "Easel",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/188px-Easel.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/a/a7/Easel.png/188px-Easel.png"
+  },
+  {
+    "name": "Elegant Table",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/320px-Elegant_Table.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/5/5b/Elegant_Table.png/320px-Elegant_Table.png"
+  },
+  {
+    "name": "Embankment Scaffold",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/320px-Embankment_Scaffold.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/2/2d/Embankment_Scaffold.png/320px-Embankment_Scaffold.png"
+  },
+  {
+    "name": "Exquisite Chest",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Exquisite_Chest.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e1/Exquisite_Chest.png"
+  },
+  {
+    "name": "Face Cutout Standee",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/243px-Face_Cutout_Standee.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/b/b4/Face_Cutout_Standee.png/243px-Face_Cutout_Standee.png"
+  },
+  {
+    "name": "Fealty Stone",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Fealty_Stone.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/8a/Fealty_Stone.png"
+  },
+  {
+    "name": "Field Cairn",
+    "category": "agriculture",
+    "width": 1,
+    "height": 1,
+    "color": "#228B22",
+    "image": "images/Field_Cairn.png",
+    "imageUrl": "https://ringofbrodgar.com/images/1/1d/Field_Cairn.png"
+  },
+  {
+    "name": "Fine Sofa",
+    "category": "furniture",
+    "width": 2,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Fine_Sofa.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/98/Fine_Sofa.png"
+  },
+  {
+    "name": "Finery Forge",
+    "category": "crafting",
+    "width": 1,
+    "height": 1,
+    "color": "#DC143C",
+    "image": "images/219px-Finery_Forge.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/b/b4/Finery_Forge.png/219px-Finery_Forge.png"
+  },
+  {
+    "name": "Fire",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Fire.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/30/Fire.png"
+  },
+  {
+    "name": "Flagpole",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/79px-Flagpole.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/2/26/Flagpole.png/79px-Flagpole.png"
+  },
+  {
+    "name": "Foldup Sign",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Foldup_Sign.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3a/Foldup_Sign.png"
+  },
+  {
+    "name": "Food Trough",
+    "category": "agriculture",
+    "width": 2,
+    "height": 1,
+    "color": "#228B22",
+    "image": "images/320px-Food_Trough.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/a/ac/Food_Trough.png/320px-Food_Trough.png"
+  },
+  {
+    "name": "Garden Bench",
+    "category": "furniture",
+    "width": 2,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Garden_Bench.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/84/Garden_Bench.png"
+  },
+  {
+    "name": "Garden Pot",
+    "category": "agriculture",
+    "width": 1,
+    "height": 1,
+    "color": "#228B22",
+    "image": "images/Garden_Pot.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/2c/Garden_Pot.png"
+  },
+  {
+    "name": "Garden Shed",
+    "category": "storage",
+    "width": 2,
+    "height": 2,
+    "color": "#8B4513",
+    "image": "images/Garden_Shed.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3a/Garden_Shed.png"
+  },
+  {
+    "name": "Gemcutter%27s Wheel",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/293px-Gemcutter%27s_Wheel.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c9/Gemcutter%27s_Wheel.jpg/293px-Gemcutter%27s_Wheel.jpg"
+  },
+  {
+    "name": "Glass Pane Frame",
+    "category": "defense",
+    "width": 1,
+    "height": 1,
+    "color": "#696969",
+    "image": "images/Glass_Pane_Frame.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/0a/Glass_Pane_Frame.png"
+  },
+  {
+    "name": "Granary",
+    "category": "other",
+    "width": 3,
+    "height": 3,
+    "color": "#808080",
+    "image": "images/260px-Granary.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/2/27/Granary.png/260px-Granary.png"
+  },
+  {
+    "name": "Grave Cairn",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Grave_Cairn.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/81/Grave_Cairn.png"
+  },
+  {
+    "name": "Great Hall",
+    "category": "housing",
+    "width": 10,
+    "height": 14,
+    "color": "#A0522D",
+    "image": "images/320px-Great_Hall.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c7/Great_Hall.png/320px-Great_Hall.png"
+  },
+  {
+    "name": "Greenhouse",
+    "category": "housing",
+    "width": 3,
+    "height": 4,
+    "color": "#A0522D",
+    "image": "images/320px-Greenhouse.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f9/Greenhouse.jpg/320px-Greenhouse.jpg"
+  },
+  {
+    "name": "Grotesque Idol",
+    "category": "other",
+    "width": 3,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/256px-Grotesque_Idol.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/5/58/Grotesque_Idol.png/256px-Grotesque_Idol.png"
+  },
+  {
+    "name": "Hatrack",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Hatrack.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/8d/Hatrack.png"
+  },
+  {
+    "name": "Hearth Fire",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/320px-Hearth_Fire.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/0/05/Hearth_Fire.png/320px-Hearth_Fire.png"
+  },
+  {
+    "name": "Herbalist Table",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Herbalist_Table.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/5b/Herbalist_Table.png"
+  },
+  {
+    "name": "Hitching Post",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Hitching_Post.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/8c/Hitching_Post.png"
+  },
+  {
+    "name": "Hookah",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Hookah.png",
+    "imageUrl": "https://ringofbrodgar.com/images/7/76/Hookah.png"
+  },
+  {
+    "name": "Horse",
+    "category": "other",
+    "width": 1,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/320px-Horse.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c3/Horse.png/320px-Horse.png"
+  },
+  {
+    "name": "Igloo",
+    "category": "housing",
+    "width": 4,
+    "height": 4,
+    "color": "#A0522D",
+    "image": "images/Igloo_outside.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/9/99/Igloo_outside.jpg"
+  },
+  {
+    "name": "Kicksled",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/320px-Kicksled.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/2/23/Kicksled.png/320px-Kicksled.png"
+  },
+  {
+    "name": "Kiln",
+    "category": "crafting",
+    "width": 2,
+    "height": 2,
+    "color": "#DC143C",
+    "image": "images/Kiln.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/58/Kiln.png"
+  },
+  {
+    "name": "Knarr",
+    "category": "storage",
+    "width": 3,
+    "height": 11,
+    "color": "#8B4513",
+    "image": "images/306px-Knarr.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/8/80/Knarr.png/306px-Knarr.png"
+  },
+  {
+    "name": "Knarr Sail",
+    "category": "other",
+    "width": 2,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/Knarr_sail.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e1/Knarr_sail.png"
+  },
+  {
+    "name": "Lantern Hanger",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/214px-Lantern_Hanger.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/7/7f/Lantern_Hanger.png/214px-Lantern_Hanger.png"
+  },
+  {
+    "name": "Lantern Post",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Placeholder_other.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3f/Placeholder_other.png"
+  },
+  {
+    "name": "Lantern Stand",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Lantern_Stand.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/8/89/Lantern_Stand.jpg"
+  },
+  {
+    "name": "Large Chest",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Large_Chest.png",
+    "imageUrl": "https://ringofbrodgar.com/images/6/62/Large_Chest.png"
+  },
+  {
+    "name": "Leanto",
+    "category": "other",
+    "width": 2,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Leanto.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/29/Leanto.png"
+  },
+  {
+    "name": "Leather Basket",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Leather_Basket.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/81/Leather_Basket.png"
+  },
+  {
+    "name": "Linen Crate",
+    "category": "storage",
+    "width": 2,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Linen_Crate.png",
+    "imageUrl": "https://ringofbrodgar.com/images/f/f9/Linen_Crate.png"
+  },
+  {
+    "name": "Lobster Pot",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Lobster_Pot.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e9/Lobster_Pot.png"
+  },
+  {
+    "name": "Log",
+    "category": "other",
+    "width": 1,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/Log.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e0/Log.png"
+  },
+  {
+    "name": "Log Cabin",
+    "category": "housing",
+    "width": 4,
+    "height": 4,
+    "color": "#A0522D",
+    "image": "images/Log_Cabin.png",
+    "imageUrl": "https://ringofbrodgar.com/images/6/66/Log_Cabin.png"
+  },
+  {
+    "name": "Long Bench",
+    "category": "furniture",
+    "width": 2,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/320px-Long_Bench.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f5/Long_Bench.png/320px-Long_Bench.png"
+  },
+  {
+    "name": "Loom",
+    "category": "crafting",
+    "width": 1,
+    "height": 1,
+    "color": "#DC143C",
+    "image": "images/Loom.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3b/Loom.png"
+  },
+  {
+    "name": "Mannequin",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Mannequin.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/9a/Mannequin.png"
+  },
+  {
+    "name": "Meatgrinder",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Meatgrinder.png",
+    "imageUrl": "https://ringofbrodgar.com/images/1/1f/Meatgrinder.png"
+  },
+  {
+    "name": "Menhir",
+    "category": "other",
+    "width": 4,
+    "height": 4,
+    "color": "#808080",
+    "image": "images/251px-Menhir.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/a/a2/Menhir.png/251px-Menhir.png"
+  },
+  {
+    "name": "Metal Cabinet",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Metal_Cabinet.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3a/Metal_Cabinet.png"
+  },
+  {
+    "name": "Metal Cauldron",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Metal_Cauldron.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/03/Metal_Cauldron.png"
+  },
+  {
+    "name": "Milling Machine",
+    "category": "other",
+    "width": 3,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/Milling_Machine.png",
+    "imageUrl": "https://ringofbrodgar.com/images/d/de/Milling_Machine.png"
+  },
+  {
+    "name": "Mine Beam",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/186px-Mine_Beam.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/1/15/Mine_Beam.png/186px-Mine_Beam.png"
+  },
+  {
+    "name": "Mine Elevator",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/320px-Mine_Elevator.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/7/70/Mine_Elevator.jpg/320px-Mine_Elevator.jpg"
+  },
+  {
+    "name": "Mine Hole",
+    "category": "housing",
+    "width": 2,
+    "height": 2,
+    "color": "#A0522D",
+    "image": "images/Mine_Hole.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/2b/Mine_Hole.png"
+  },
+  {
+    "name": "Mine Pyre",
+    "category": "housing",
+    "width": 2,
+    "height": 2,
+    "color": "#A0522D",
+    "image": "images/Mine_Pyre.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/0/01/Mine_Pyre.jpg"
+  },
+  {
+    "name": "Mine Support",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Mine_Support.png",
+    "imageUrl": "https://ringofbrodgar.com/images/c/cf/Mine_Support.png"
+  },
+  {
+    "name": "Mound Bed",
+    "category": "furniture",
+    "width": 2,
+    "height": 3,
+    "color": "#4682B4",
+    "image": "images/Mound_Bed.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/8/8c/Mound_Bed.jpg"
+  },
+  {
+    "name": "Notice Board",
+    "category": "other",
+    "width": 2,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Notice_Board.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b2/Notice_Board.png"
+  },
+  {
+    "name": "Ore Smelter",
+    "category": "storage",
+    "width": 3,
+    "height": 2,
+    "color": "#8B4513",
+    "image": "images/Ore_Smelter.png",
+    "imageUrl": "https://ringofbrodgar.com/images/c/c6/Ore_Smelter.png"
+  },
+  {
+    "name": "Oven",
+    "category": "other",
+    "width": 1,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/255px-Oven.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/4/46/Oven.png/255px-Oven.png"
+  },
+  {
+    "name": "Palisade",
+    "category": "defense",
+    "width": 1,
+    "height": 1,
+    "color": "#696969",
+    "image": "images/Palisade.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/ea/Palisade.png",
+    "usesLineTool": true
+  },
+  {
+    "name": "Personal Claim",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Personal_Claim.png",
+    "imageUrl": "https://ringofbrodgar.com/images/1/17/Personal_Claim.png"
+  },
+  {
+    "name": "Postbox",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Postbox.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/29/Postbox.png"
+  },
+  {
+    "name": "Pot",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Pot.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/54/Pot.png"
+  },
+  {
+    "name": "Potter%27s Wheel",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/320px-Potter%27s_Wheel.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/9/95/Potter%27s_Wheel.png/320px-Potter%27s_Wheel.png"
+  },
+  {
+    "name": "Primitive Tent",
+    "category": "housing",
+    "width": 3,
+    "height": 4,
+    "color": "#A0522D",
+    "image": "images/320px-Primitive_Tent.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f1/Primitive_Tent.jpg/320px-Primitive_Tent.jpg"
+  },
+  {
+    "name": "Pumpkin Lantern",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Pumpkin_Lantern.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/40/Pumpkin_Lantern.png"
+  },
+  {
+    "name": "Quern",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Quern.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/eb/Quern.png"
+  },
+  {
+    "name": "Rabbit Hutch",
+    "category": "storage",
+    "width": 2,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Rabbit_Hutch.png",
+    "imageUrl": "https://ringofbrodgar.com/images/f/f7/Rabbit_Hutch.png"
+  },
+  {
+    "name": "Raft",
+    "category": "other",
+    "width": 4,
+    "height": 4,
+    "color": "#808080",
+    "image": "images/320px-Raft.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/0/08/Raft.png/320px-Raft.png"
+  },
+  {
+    "name": "Ram Chair",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Ram_Chair.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/5c/Ram_Chair.png"
+  },
+  {
+    "name": "Rat Chest",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Placeholder_other.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3f/Placeholder_other.png"
+  },
+  {
+    "name": "Rocking Chair",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Rocking_Chair.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/be/Rocking_Chair.png"
+  },
+  {
+    "name": "Rocking Horse",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Rocking_Horse.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/99/Rocking_Horse.png"
+  },
+  {
+    "name": "Rope Walk",
+    "category": "other",
+    "width": 1,
+    "height": 4,
+    "color": "#808080",
+    "image": "images/Rope_Walk.png",
+    "imageUrl": "https://ringofbrodgar.com/images/7/77/Rope_Walk.png"
+  },
+  {
+    "name": "Roundpole Fence",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Roundpole_Fence.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/80/Roundpole_Fence.png",
+    "usesLineTool": true
+  },
+  {
+    "name": "Rowboat",
+    "category": "other",
+    "width": 1,
+    "height": 3,
+    "color": "#808080",
+    "image": "images/Rowboat.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/22/Rowboat.png"
+  },
+  {
+    "name": "Royal Stool",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Royal_Stool.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/01/Royal_Stool.png"
+  },
+  {
+    "name": "Royal Throne",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Royal_Throne.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/aa/Royal_Throne.png"
+  },
+  {
+    "name": "Runed Dolmen",
+    "category": "other",
+    "width": 1,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/Runed_Dolmen.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/ee/Runed_Dolmen.png"
+  },
+  {
+    "name": "Runestone",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Runestone.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/08/Runestone.png"
+  },
+  {
+    "name": "Rustic Chair",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Rustic_Chair.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/bb/Rustic_Chair.png"
+  },
+  {
+    "name": "Rustic Table",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Rustic_Table.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3c/Rustic_Table.png"
+  },
+  {
+    "name": "Sawmill",
+    "category": "other",
+    "width": 2,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/320px-Sawmill.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/4/4a/Sawmill.png/320px-Sawmill.png"
+  },
+  {
+    "name": "Seamark",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/198px-Seamark.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/ca/Seamark.png/198px-Seamark.png"
+  },
+  {
+    "name": "Ship Dock",
+    "category": "other",
+    "width": 3,
+    "height": 11,
+    "color": "#808080",
+    "image": "images/320px-Ship_Dock.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/d/d2/Ship_Dock.png/320px-Ship_Dock.png"
+  },
+  {
+    "name": "Signboard",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Signboard.png",
+    "imageUrl": "https://ringofbrodgar.com/images/5/57/Signboard.png"
+  },
+  {
+    "name": "Skull Throne",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Skull_Throne.png",
+    "imageUrl": "https://ringofbrodgar.com/images/8/8e/Skull_Throne.png"
+  },
+  {
+    "name": "Sleigh",
+    "category": "other",
+    "width": 2,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/320px-Sleigh.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/9/92/Sleigh.jpg/320px-Sleigh.jpg"
+  },
+  {
+    "name": "Smoke Shed",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/320px-Smoke_Shed.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/8/8d/Smoke_Shed.jpg/320px-Smoke_Shed.jpg"
+  },
+  {
+    "name": "Snekkja",
+    "category": "storage",
+    "width": 2,
+    "height": 6,
+    "color": "#8B4513",
+    "image": "images/Snekkja.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b9/Snekkja.jpg"
+  },
+  {
+    "name": "Snow Lantern",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Snow_Lantern.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/ae/Snow_Lantern.png"
+  },
+  {
+    "name": "Snowman",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/237px-Snowman.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c7/Snowman.png/237px-Snowman.png"
+  },
+  {
+    "name": "Spinning Wheel",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Spinning_Wheel.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/2e/Spinning_Wheel.png"
+  },
+  {
+    "name": "Stack Furnace",
+    "category": "storage",
+    "width": 1,
+    "height": 2,
+    "color": "#8B4513",
+    "image": "images/309px-Stack_Furnace.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/6/60/Stack_Furnace.png/309px-Stack_Furnace.png"
+  },
+  {
+    "name": "Standing Flag",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Standing_Flag.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b8/Standing_Flag.png"
+  },
+  {
+    "name": "Statue of the Chieftain",
+    "category": "decoration",
+    "width": 1,
+    "height": 1,
+    "color": "#FFD700",
+    "image": "images/Statue_of_the_Chieftain.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/0d/Statue_of_the_Chieftain.png"
+  },
+  {
+    "name": "Steel Crucible",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Steel_Crucible.png",
+    "imageUrl": "https://ringofbrodgar.com/images/7/77/Steel_Crucible.png"
+  },
+  {
+    "name": "Still",
+    "category": "other",
+    "width": 1,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/Still.png",
+    "imageUrl": "https://ringofbrodgar.com/images/d/d6/Still.png"
+  },
+  {
+    "name": "Stone Bench",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Stone_Bench.png",
+    "imageUrl": "https://ringofbrodgar.com/images/1/19/Stone_Bench.png"
+  },
+  {
+    "name": "Stone Casket",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Stone_Casket.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/07/Stone_Casket.png"
+  },
+  {
+    "name": "Stone Column",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Stone_Column.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b7/Stone_Column.png"
+  },
+  {
+    "name": "Stone Mansion",
+    "category": "housing",
+    "width": 9,
+    "height": 9,
+    "color": "#A0522D",
+    "image": "images/320px-Stone_Mansion.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/b/bf/Stone_Mansion.png/320px-Stone_Mansion.png"
+  },
+  {
+    "name": "Stone Table",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Stone_Table.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/25/Stone_Table.png"
+  },
+  {
+    "name": "Stone Throne",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Stone_Throne.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/ab/Stone_Throne.png"
+  },
+  {
+    "name": "Stone Tower",
+    "category": "housing",
+    "width": 7,
+    "height": 7,
+    "color": "#A0522D",
+    "image": "images/205px-Stone_Tower.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c4/Stone_Tower.png/205px-Stone_Tower.png"
+  },
+  {
+    "name": "Stonehut",
+    "category": "housing",
+    "width": 4,
+    "height": 4,
+    "color": "#A0522D",
+    "image": "images/320px-Stonehut.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/6/6a/Stonehut.png/320px-Stonehut.png"
+  },
+  {
+    "name": "Stonekist",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/320px-Stonekist.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/0/0e/Stonekist.png/320px-Stonekist.png"
+  },
+  {
+    "name": "Stonestead",
+    "category": "housing",
+    "width": 5,
+    "height": 8,
+    "color": "#A0522D",
+    "image": "images/320px-Stonestead.jpeg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/d/d8/Stonestead.jpeg/320px-Stonestead.jpeg"
+  },
+  {
+    "name": "Straw Basket",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Straw_Basket.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3b/Straw_Basket.png"
+  },
+  {
+    "name": "Strongbox",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Strongbox.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b6/Strongbox.png"
+  },
+  {
+    "name": "Study Desk",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/320px-Study_Desk.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/a/ab/Study_Desk.png/320px-Study_Desk.png"
+  },
+  {
+    "name": "Sturdy Bed",
+    "category": "furniture",
+    "width": 1,
+    "height": 2,
+    "color": "#4682B4",
+    "image": "images/Sturdy_Bed.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e8/Sturdy_Bed.png"
+  },
+  {
+    "name": "Sublime Portico",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Sublime_Portico.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/00/Sublime_Portico.png"
+  },
+  {
+    "name": "Tanning Tub",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Tanning_Tub.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/ab/Tanning_Tub.png"
+  },
+  {
+    "name": "Tar Kiln",
+    "category": "crafting",
+    "width": 4,
+    "height": 4,
+    "color": "#DC143C",
+    "image": "images/320px-Tar_Kiln.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/5/5a/Tar_Kiln.png/320px-Tar_Kiln.png"
+  },
+  {
+    "name": "Tarpit",
+    "category": "other",
+    "width": 6,
+    "height": 5,
+    "color": "#808080",
+    "image": "images/320px-Tarpit.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f8/Tarpit.png/320px-Tarpit.png"
+  },
+  {
+    "name": "Thatch Basket",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Thatch_Basket.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/44/Thatch_Basket.png"
+  },
+  {
+    "name": "Thatched Bed",
+    "category": "furniture",
+    "width": 1,
+    "height": 2,
+    "color": "#4682B4",
+    "image": "images/Thatched_Bed.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/a3/Thatched_Bed.png"
+  },
+  {
+    "name": "Thatched Chair",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Thatched_Chair.png",
+    "imageUrl": "https://ringofbrodgar.com/images/7/7c/Thatched_Chair.png"
+  },
+  {
+    "name": "Timber House",
+    "category": "housing",
+    "width": 6,
+    "height": 6,
+    "color": "#A0522D",
+    "image": "images/320px-Timber_House.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/2/2f/Timber_House.png/320px-Timber_House.png"
+  },
+  {
+    "name": "Torchpost",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Torchpost.png",
+    "imageUrl": "https://ringofbrodgar.com/images/d/d2/Torchpost.png"
+  },
+  {
+    "name": "Trellis",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Trellis.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/e1/Trellis.png"
+  },
+  {
+    "name": "Urn",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Urn.png",
+    "imageUrl": "https://ringofbrodgar.com/images/0/06/Urn.png"
+  },
+  {
+    "name": "Village Banner",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Village_Banner.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/49/Village_Banner.png"
+  },
+  {
+    "name": "Village Buoy",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Village_Buoy.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/2c/Village_Buoy.png"
+  },
+  {
+    "name": "Village Claim",
+    "category": "other",
+    "width": 3,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/152px-Village_Claim.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/9/95/Village_Claim.png/152px-Village_Claim.png"
+  },
+  {
+    "name": "Wagon",
+    "category": "storage",
+    "width": 2,
+    "height": 2,
+    "color": "#8B4513",
+    "image": "images/Wagon.png",
+    "imageUrl": "https://ringofbrodgar.com/images/7/70/Wagon.png"
+  },
+  {
+    "name": "Wagon Station",
+    "category": "other",
+    "width": 6,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/320px-Wagon_Station.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/e/e7/Wagon_Station.jpg/320px-Wagon_Station.jpg"
+  },
+  {
+    "name": "War Flag",
+    "category": "decoration",
+    "width": 1,
+    "height": 1,
+    "color": "#FFD700",
+    "image": "images/Placeholder_other.png",
+    "imageUrl": "https://ringofbrodgar.com/images/3/3f/Placeholder_other.png"
+  },
+  {
+    "name": "Wardrobe",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Wardrobe.png",
+    "imageUrl": "https://ringofbrodgar.com/images/1/15/Wardrobe.png"
+  },
+  {
+    "name": "Watermill",
+    "category": "housing",
+    "width": 5,
+    "height": 11,
+    "color": "#A0522D",
+    "image": "images/320px-Watermill.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f9/Watermill.jpg/320px-Watermill.jpg"
+  },
+  {
+    "name": "Well",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Well.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/41/Well.png"
+  },
+  {
+    "name": "Wellspring",
+    "category": "other",
+    "width": 3,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/320px-Wellspring.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f1/Wellspring.png/320px-Wellspring.png"
+  },
+  {
+    "name": "Wheelbarrow",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Wheelbarrow.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/4a/Wheelbarrow.png"
+  },
+  {
+    "name": "Wicker Basket",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Wicker_Basket.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/af/Wicker_Basket.png"
+  },
+  {
+    "name": "Wilderness Beacon",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Wilderness_Beacon.png",
+    "imageUrl": "https://ringofbrodgar.com/images/a/a0/Wilderness_Beacon.png"
+  },
+  {
+    "name": "Wilderness Skis",
+    "category": "other",
+    "width": 1,
+    "height": 2,
+    "color": "#808080",
+    "image": "images/213px-Wilderness_Skis.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/1/16/Wilderness_Skis.png/213px-Wilderness_Skis.png"
+  },
+  {
+    "name": "Windmill",
+    "category": "housing",
+    "width": 5,
+    "height": 5,
+    "color": "#A0522D",
+    "image": "images/231px-Windmill.png",
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/6/68/Windmill.png/231px-Windmill.png"
+  },
+  {
+    "name": "Wine Rack",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Wine_Rack.png",
+    "imageUrl": "https://ringofbrodgar.com/images/4/43/Wine_Rack.png"
+  },
+  {
+    "name": "Witherstand",
+    "category": "other",
+    "width": 1,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Witherstand.png",
+    "imageUrl": "https://ringofbrodgar.com/images/d/d6/Witherstand.png"
+  },
+  {
+    "name": "Wooden Box",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Wooden_Box.jpg",
+    "imageUrl": "https://ringofbrodgar.com/images/c/c7/Wooden_Box.jpg"
+  },
+  {
+    "name": "Wooden Chest",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#8B4513",
+    "image": "images/Wooden_Chest.png",
+    "imageUrl": "https://ringofbrodgar.com/images/b/b8/Wooden_Chest.png"
+  },
+  {
+    "name": "Wooden Roadsign",
+    "category": "decoration",
+    "width": 1,
+    "height": 1,
+    "color": "#FFD700",
+    "image": "images/Wooden_Roadsign.png",
+    "imageUrl": "https://ringofbrodgar.com/images/7/75/Wooden_Roadsign.png"
+  },
+  {
+    "name": "Wrecking Ball",
+    "category": "other",
+    "width": 2,
+    "height": 1,
+    "color": "#808080",
+    "image": "images/Wrecking_Ball.png",
+    "imageUrl": "https://ringofbrodgar.com/images/9/9b/Wrecking_Ball.png"
+  },
+  {
+    "name": "Written Sign",
+    "category": "furniture",
+    "width": 1,
+    "height": 1,
+    "color": "#4682B4",
+    "image": "images/Wooden_Sign.png",
+    "imageUrl": "https://ringofbrodgar.com/images/2/22/Wooden_Sign.png"
+  }
+]

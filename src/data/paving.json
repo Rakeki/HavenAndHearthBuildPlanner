@@ -1,0 +1,452 @@
+[
+  {
+    "name": "Alabaster",
+    "category": "stone",
+    "image": "images/paving/Alabaster.png"
+  },
+  {
+    "name": "Apatite",
+    "category": "stone",
+    "image": "images/paving/Apatite.png"
+  },
+  {
+    "name": "Arkose",
+    "category": "stone",
+    "image": "images/paving/Arkose.png"
+  },
+  {
+    "name": "Basalt",
+    "category": "stone",
+    "image": "images/paving/Basalt.png"
+  },
+  {
+    "name": "Black Coal",
+    "category": "stone",
+    "image": "images/paving/Black_Coal.png"
+  },
+  {
+    "name": "Breccia",
+    "category": "stone",
+    "image": "images/paving/Breccia.png"
+  },
+  {
+    "name": "Chert",
+    "category": "stone",
+    "image": "images/paving/Chert.png"
+  },
+  {
+    "name": "Diabase",
+    "category": "stone",
+    "image": "images/paving/Diabase.png"
+  },
+  {
+    "name": "Diorite",
+    "category": "stone",
+    "image": "images/paving/Diorite.png"
+  },
+  {
+    "name": "Dolomite",
+    "category": "stone",
+    "image": "images/paving/Dolomite.png"
+  },
+  {
+    "name": "Eclogite",
+    "category": "stone",
+    "image": "images/paving/Eclogite.png"
+  },
+  {
+    "name": "Feldspar",
+    "category": "stone",
+    "image": "images/paving/Feldspar.png"
+  },
+  {
+    "name": "Flint",
+    "category": "stone",
+    "image": "images/paving/Flint.png"
+  },
+  {
+    "name": "Fluorospar",
+    "category": "stone",
+    "image": "images/paving/Fluorospar.png"
+  },
+  {
+    "name": "Gabbro",
+    "category": "stone",
+    "image": "images/paving/Gabbro.png"
+  },
+  {
+    "name": "Gneiss",
+    "category": "stone",
+    "image": "images/paving/Gneiss.png"
+  },
+  {
+    "name": "Granite",
+    "category": "stone",
+    "image": "images/paving/Granite.png"
+  },
+  {
+    "name": "Graywacke",
+    "category": "stone",
+    "image": "images/paving/Graywacke.png"
+  },
+  {
+    "name": "Greenschist",
+    "category": "stone",
+    "image": "images/paving/Greenschist.png"
+  },
+  {
+    "name": "Hornblende",
+    "category": "stone",
+    "image": "images/paving/Hornblende.png"
+  },
+  {
+    "name": "Jasper",
+    "category": "stone",
+    "image": "images/paving/Jasper.png"
+  },
+  {
+    "name": "Korund",
+    "category": "stone",
+    "image": "images/paving/Korund.png"
+  },
+  {
+    "name": "Kyanite",
+    "category": "stone",
+    "image": "images/paving/Kyanite.png"
+  },
+  {
+    "name": "Limestone",
+    "category": "stone",
+    "image": "images/paving/Limestone.png"
+  },
+  {
+    "name": "Marble",
+    "category": "stone",
+    "image": "images/paving/Marble.png"
+  },
+  {
+    "name": "Mica",
+    "category": "stone",
+    "image": "images/paving/Mica.png"
+  },
+  {
+    "name": "Microlite",
+    "category": "stone",
+    "image": "images/paving/Microlite.png"
+  },
+  {
+    "name": "Olivine",
+    "category": "stone",
+    "image": "images/paving/Olivine.png"
+  },
+  {
+    "name": "Orthoclase",
+    "category": "stone",
+    "image": "images/paving/Orthoclase.png"
+  },
+  {
+    "name": "Pegmatite",
+    "category": "stone",
+    "image": "images/paving/Pegmatite.png"
+  },
+  {
+    "name": "Porphyry",
+    "category": "stone",
+    "image": "images/paving/Porphyry.png"
+  },
+  {
+    "name": "Pumice",
+    "category": "stone",
+    "image": "images/paving/Pumice.png"
+  },
+  {
+    "name": "Quarryartz",
+    "category": "stone",
+    "image": "images/paving/Quarryartz.png"
+  },
+  {
+    "name": "Quartz",
+    "category": "stone",
+    "image": "images/paving/Quartz.png"
+  },
+  {
+    "name": "Rhyolite",
+    "category": "stone",
+    "image": "images/paving/Rhyolite.png"
+  },
+  {
+    "name": "Rock Salt",
+    "category": "stone",
+    "image": "images/paving/Rock_Salt.png"
+  },
+  {
+    "name": "Sandstone",
+    "category": "stone",
+    "image": "images/paving/Sandstone.png"
+  },
+  {
+    "name": "Schist",
+    "category": "stone",
+    "image": "images/paving/Schist.png"
+  },
+  {
+    "name": "Serpentine",
+    "category": "stone",
+    "image": "images/paving/Serpentine.png"
+  },
+  {
+    "name": "Slate",
+    "category": "stone",
+    "image": "images/paving/Slate.png"
+  },
+  {
+    "name": "Soapstone",
+    "category": "stone",
+    "image": "images/paving/Soapstone.png"
+  },
+  {
+    "name": "Sodalite",
+    "category": "stone",
+    "image": "images/paving/Sodalite.png"
+  },
+  {
+    "name": "Sunstone",
+    "category": "stone",
+    "image": "images/paving/Sunstone.png"
+  },
+  {
+    "name": "Zincspar",
+    "category": "stone",
+    "image": "images/paving/Zincspar.png"
+  },
+  {
+    "name": "Black Ore",
+    "category": "ore",
+    "image": "images/paving/Black_Ore.png"
+  },
+  {
+    "name": "Bloodstone",
+    "category": "ore",
+    "image": "images/paving/Bloodstone.png"
+  },
+  {
+    "name": "Cassiterite",
+    "category": "ore",
+    "image": "images/paving/Cassiterite.png"
+  },
+  {
+    "name": "Chalcopyrite",
+    "category": "ore",
+    "image": "images/paving/Chalcopyrite.png"
+  },
+  {
+    "name": "Cinnabar",
+    "category": "ore",
+    "image": "images/paving/Cinnabar.png"
+  },
+  {
+    "name": "Direvein",
+    "category": "ore",
+    "image": "images/paving/Direvein.png"
+  },
+  {
+    "name": "Galena",
+    "category": "ore",
+    "image": "images/paving/Galena.png"
+  },
+  {
+    "name": "Heavy Earth",
+    "category": "ore",
+    "image": "images/paving/Heavy_Earth.png"
+  },
+  {
+    "name": "Horn Silver",
+    "category": "ore",
+    "image": "images/paving/Horn_Silver.png"
+  },
+  {
+    "name": "Iron Ochre",
+    "category": "ore",
+    "image": "images/paving/Iron_Ochre.png"
+  },
+  {
+    "name": "Lead Glance",
+    "category": "ore",
+    "image": "images/paving/Lead_Glance.png"
+  },
+  {
+    "name": "Leaf Ore",
+    "category": "ore",
+    "image": "images/paving/Leaf_Ore.png"
+  },
+  {
+    "name": "Malachite",
+    "category": "ore",
+    "image": "images/paving/Malachite.png"
+  },
+  {
+    "name": "Peacock Ore",
+    "category": "ore",
+    "image": "images/paving/Peacock_Ore.png"
+  },
+  {
+    "name": "Schrifterz",
+    "category": "ore",
+    "image": "images/paving/Schrifterz.png"
+  },
+  {
+    "name": "Silvershine",
+    "category": "ore",
+    "image": "images/paving/Silvershine.png"
+  },
+  {
+    "name": "Wine Glance",
+    "category": "ore",
+    "image": "images/paving/Wine_Glance.png"
+  },
+  {
+    "name": "Bronze",
+    "category": "metal",
+    "image": "images/paving/Bronze.png"
+  },
+  {
+    "name": "Cast Iron",
+    "category": "metal",
+    "image": "images/paving/Cast_Iron.png"
+  },
+  {
+    "name": "Copper",
+    "category": "metal",
+    "image": "images/paving/Copper.png"
+  },
+  {
+    "name": "Gold",
+    "category": "metal",
+    "image": "images/paving/Gold.png"
+  },
+  {
+    "name": "Lead",
+    "category": "metal",
+    "image": "images/paving/Lead.png"
+  },
+  {
+    "name": "Meteoric Iron",
+    "category": "metal",
+    "image": "images/paving/Meteoric_Iron.png"
+  },
+  {
+    "name": "Rose Gold",
+    "category": "metal",
+    "image": "images/paving/Rose_Gold.png"
+  },
+  {
+    "name": "Silver",
+    "category": "metal",
+    "image": "images/paving/Silver.png"
+  },
+  {
+    "name": "Steel",
+    "category": "metal",
+    "image": "images/paving/Steel.png"
+  },
+  {
+    "name": "Tin",
+    "category": "metal",
+    "image": "images/paving/Tin.png"
+  },
+  {
+    "name": "Wrought Iron",
+    "category": "metal",
+    "image": "images/paving/Wrought_Iron.png"
+  },
+  {
+    "name": "Teal Brick (Pit)",
+    "category": "brick",
+    "image": "images/paving/Brick_Teal.png"
+  },
+  {
+    "name": "Red Brick (Ball)",
+    "category": "brick",
+    "image": "images/paving/Brick_Red.png"
+  },
+  {
+    "name": "Yellow Brick (Acre)",
+    "category": "brick",
+    "image": "images/paving/Brick_Yellow.png"
+  },
+  {
+    "name": "Green Brick (Cave)",
+    "category": "brick",
+    "image": "images/paving/Brick_Green.png"
+  },
+  {
+    "name": "Gray Brick",
+    "category": "brick",
+    "image": "images/paving/Brick_Black.png"
+  },
+  {
+    "name": "Pink Brick (Potter)",
+    "category": "brick",
+    "image": "images/paving/Brick_Pink.png"
+  },
+  {
+    "name": "White Brick (Bone)",
+    "category": "brick",
+    "image": "images/paving/Brick_White.png"
+  },
+  {
+    "name": "Coade Stone Brick",
+    "category": "brick",
+    "image": "images/paving/Brick_Coade_Stone.png"
+  },
+  {
+    "name": "Blue Brick (Sea)",
+    "category": "brick",
+    "image": "images/paving/Brick_Blue.png"
+  },
+  {
+    "name": "Bat Rock",
+    "category": "special",
+    "image": "images/paving/Bat_Rock.png"
+  },
+  {
+    "name": "Cat Gold",
+    "category": "special",
+    "image": "images/paving/Cat_Gold.png"
+  },
+  {
+    "name": "Dross",
+    "category": "special",
+    "image": "images/paving/Dross.png"
+  },
+  {
+    "name": "Lava Rock",
+    "category": "special",
+    "image": "images/paving/Lava_Rock.png"
+  },
+  {
+    "name": "Obsidian",
+    "category": "special",
+    "image": "images/paving/Obsidian.png"
+  },
+  {
+    "name": "Meteorite",
+    "category": "special",
+    "image": "images/paving/Meteorite.png"
+  },
+  {
+    "name": "Rock Crystal",
+    "category": "special",
+    "image": "images/paving/Rock_Crystal.png"
+  },
+  {
+    "name": "Conchite",
+    "category": "special",
+    "image": "images/paving/Conchite.png"
+  },
+  {
+    "name": "Slag",
+    "category": "special",
+    "image": "images/paving/Slag.png"
+  }
+]

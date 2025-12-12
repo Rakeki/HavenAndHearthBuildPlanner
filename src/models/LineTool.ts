@@ -41,7 +41,7 @@ export class LineTool {
    * Start a new line at the given point
    * Checks if the starting point should be a corner based on existing items
    */
-  public startLine(point: Point, placedItems: any[] = []): void {
+  public startLine(point: Point): void {
     this.startPoint = point;
     this.currentDirection = null;
     

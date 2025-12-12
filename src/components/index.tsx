@@ -142,7 +142,7 @@ export const PlannerCanvas: React.FC<any> = ({
           
           for (let x = pos.x; x < pos.x + itemWidth; x++) {
             const palisade = items.find(
-              item => item.x === x && item.y === pos.y && 
+              (item: any) => item.x === x && item.y === pos.y && 
                       item.usesLineTool && (item.orientation === 'horizontal' || item.orientation === 'corner')
             );
             if (palisade) {
@@ -165,7 +165,7 @@ export const PlannerCanvas: React.FC<any> = ({
           
           for (let y = pos.y; y < pos.y + itemHeight; y++) {
             const palisade = items.find(
-              item => item.x === pos.x && item.y === y && 
+              (item: any) => item.x === pos.x && item.y === y && 
                       item.usesLineTool && (item.orientation === 'vertical' || item.orientation === 'corner')
             );
             if (palisade) {
@@ -328,7 +328,7 @@ export const PlannerCanvas: React.FC<any> = ({
     if (selection.selectedBuildable && selection.selectedBuildable.usesLineTool) {
       if (!selection.lineTool.isActive()) {
         // Start new line
-        selection.lineTool.startLine(pos, gridManager.getItems());
+        selection.lineTool.startLine(pos);
         setStateChanged(true);
         render();
       } else {
@@ -351,7 +351,7 @@ export const PlannerCanvas: React.FC<any> = ({
           
           // Reset and start new line from clicked position
           selection.lineTool.reset();
-          selection.lineTool.startLine(pos, gridManager.getItems());
+          selection.lineTool.startLine(pos);
           setStateChanged(true);
           render();
           return;

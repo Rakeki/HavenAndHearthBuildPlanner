@@ -37,7 +37,7 @@ export class GridManager {
    * Add an item to the grid
    */
   public addItem(item: PlacedItem): boolean {
-    if (!this.canPlaceItem(item.x, item.y, item.width, item.height, null)) {
+    if (!this.canPlaceItem(item.x, item.y, item.width, item.height, null, item.requiresPalisadeOverlap)) {
       return false;
     }
     this.items.push(item);
@@ -69,7 +69,8 @@ export class GridManager {
     y: number,
     width: number,
     height: number,
-    excludeItem: PlacedItem | null
+    excludeItem: PlacedItem | null,
+    requiresPalisadeOverlap: boolean = false
   ): boolean {
     // Check bounds
     if (x < 0 || y < 0 || x + width > this.gridSize || y + height > this.gridSize) {
@@ -87,11 +88,42 @@ export class GridManager {
       color: '#000000',
     });
 
+    let hasOverlapWithPalisade = false;
+
     for (const item of this.items) {
       if (item === excludeItem) continue;
       if (tempItem.overlaps(item)) {
+        // If this item requires palisade overlap, check if overlapping item is a palisade
+        if (requiresPalisadeOverlap && item.name === 'Palisade') {
+          hasOverlapWithPalisade = true;
+          // Check if overlap is at the edges of the gate
+          // For horizontal gates (width >= height): check left/right edges
+          // For vertical gates (height > width): check top/bottom edges
+          const isVerticalGate = height > width;
+          
+          if (isVerticalGate) {
+            const gateTopEdge = y;
+            const gateBottomEdge = y + height - 1;
+            // Check if palisade overlaps with either vertical end of the gate
+            if (item.contains(x, gateTopEdge) || item.contains(x, gateBottomEdge)) {
+              continue; // Allow this overlap
+            }
+          } else {
+            const gateLeftEdge = x;
+            const gateRightEdge = x + width - 1;
+            // Check if palisade overlaps with either horizontal end of the gate
+            if (item.contains(gateLeftEdge, y) || item.contains(gateRightEdge, y)) {
+              continue; // Allow this overlap
+            }
+          }
+        }
         return false;
       }
+    }
+
+    // If item requires palisade overlap, ensure we found at least one
+    if (requiresPalisadeOverlap && !hasOverlapWithPalisade) {
+      return false;
     }
 
     return true;
@@ -101,7 +133,7 @@ export class GridManager {
    * Move an item to a new position
    */
   public moveItem(item: PlacedItem, newX: number, newY: number): boolean {
-    if (!this.canPlaceItem(newX, newY, item.width, item.height, item)) {
+    if (!this.canPlaceItem(newX, newY, item.width, item.height, item, item.requiresPalisadeOverlap)) {
       return false;
     }
     item.moveTo(newX, newY);
@@ -114,7 +146,7 @@ export class GridManager {
   public rotateItem(item: PlacedItem): boolean {
     item.rotate();
     
-    if (!this.canPlaceItem(item.x, item.y, item.width, item.height, item)) {
+    if (!this.canPlaceItem(item.x, item.y, item.width, item.height, item, item.requiresPalisadeOverlap)) {
       // Revert rotation
       item.rotate();
       return false;

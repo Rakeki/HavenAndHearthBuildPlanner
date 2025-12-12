@@ -88,6 +88,7 @@ export const PlannerCanvas: React.FC<any> = ({
   selection,
   render,
   onStateChange,
+  handleZoom,
 }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStart, setDragStart] = React.useState<any>(null);
@@ -124,12 +125,71 @@ export const PlannerCanvas: React.FC<any> = ({
     }
     // Handle buildable drag (non-line tool items)
     else if (selection.selectedBuildable && !selection.selectedBuildable.usesLineTool) {
+      // Check if this item requires palisade overlap (gates, walls, fences, etc.)
+      if (selection.selectedBuildable.requiresPalisadeOverlap) {
+        const items = gridManager.getItems();
+        
+        // Determine item dimensions based on rotation
+        const shouldSwap = selection.previewRotation === 90 || selection.previewRotation === 270;
+        const itemWidth = shouldSwap ? selection.selectedBuildable.height : selection.selectedBuildable.width;
+        const itemHeight = shouldSwap ? selection.selectedBuildable.width : selection.selectedBuildable.height;
+        const isHorizontal = itemWidth > itemHeight;
+        
+        if (isHorizontal) {
+          // Horizontal item: check for horizontal palisades/walls to replace
+          const palisadesToRemove = [];
+          let hasPalisades = false;
+          
+          for (let x = pos.x; x < pos.x + itemWidth; x++) {
+            const palisade = items.find(
+              item => item.x === x && item.y === pos.y && 
+                      item.usesLineTool && (item.orientation === 'horizontal' || item.orientation === 'corner')
+            );
+            if (palisade) {
+              hasPalisades = true;
+              palisadesToRemove.push(palisade);
+            }
+          }
+          
+          // Need at least some palisades to replace
+          if (!hasPalisades) {
+            return;
+          }
+          
+          // Remove all palisade segments that the item will replace
+          palisadesToRemove.forEach(p => gridManager.removeItem(p));
+        } else {
+          // Vertical item: check for vertical palisades/walls to replace
+          const palisadesToRemove = [];
+          let hasPalisades = false;
+          
+          for (let y = pos.y; y < pos.y + itemHeight; y++) {
+            const palisade = items.find(
+              item => item.x === pos.x && item.y === y && 
+                      item.usesLineTool && (item.orientation === 'vertical' || item.orientation === 'corner')
+            );
+            if (palisade) {
+              hasPalisades = true;
+              palisadesToRemove.push(palisade);
+            }
+          }
+          
+          // Need at least some palisades to replace
+          if (!hasPalisades) {
+            return;
+          }
+          
+          // Remove all palisade segments that the item will replace
+          palisadesToRemove.forEach(p => gridManager.removeItem(p));
+        }
+      }
+      
       setIsDragging(true);
       setLastPlacedCell(pos);
       setStateChanged(true);
       
       // Place first buildable
-      const newItem = selection.selectedBuildable.createPlacedItem(pos.x, pos.y);
+      const newItem = selection.selectedBuildable.createPlacedItem(pos.x, pos.y, undefined, selection.previewRotation);
       if (gridManager.addItem(newItem)) {
         newItem.preloadImage().then(() => render());
         render();
@@ -163,14 +223,20 @@ export const PlannerCanvas: React.FC<any> = ({
 
     // Show buildable preview at cursor when buildable is selected (and not dragging)
     if (!isDragging && selection.selectedBuildable) {
+      // Apply rotation to dimensions for placement check
+      const shouldSwap = selection.previewRotation === 90 || selection.previewRotation === 270;
+      const width = shouldSwap ? selection.selectedBuildable.height : selection.selectedBuildable.width;
+      const height = shouldSwap ? selection.selectedBuildable.width : selection.selectedBuildable.height;
+      
       const isValid = gridManager.canPlaceItem(
         pos.x,
         pos.y,
-        selection.selectedBuildable.width,
-        selection.selectedBuildable.height,
-        null
+        width,
+        height,
+        null,
+        selection.selectedBuildable.requiresPalisadeOverlap
       );
-      render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid });
+      render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid, rotation: selection.previewRotation });
       return;
     }
 
@@ -201,7 +267,7 @@ export const PlannerCanvas: React.FC<any> = ({
     else if (isDragging && selection.selectedBuildable && !selection.selectedBuildable.usesLineTool && lastPlacedCell) {
       // Only place if we moved to a different cell
       if (pos.x !== lastPlacedCell.x || pos.y !== lastPlacedCell.y) {
-        const newItem = selection.selectedBuildable.createPlacedItem(pos.x, pos.y);
+        const newItem = selection.selectedBuildable.createPlacedItem(pos.x, pos.y, undefined, selection.previewRotation);
         if (gridManager.addItem(newItem)) {
           newItem.preloadImage().then(() => render());
           render();
@@ -211,14 +277,20 @@ export const PlannerCanvas: React.FC<any> = ({
     }
     // Show preview when just hovering with selected buildable
     else if (selection.selectedBuildable) {
+      // Apply rotation to dimensions for placement check
+      const shouldSwap = selection.previewRotation === 90 || selection.previewRotation === 270;
+      const width = shouldSwap ? selection.selectedBuildable.height : selection.selectedBuildable.width;
+      const height = shouldSwap ? selection.selectedBuildable.width : selection.selectedBuildable.height;
+      
       const isValid = gridManager.canPlaceItem(
         pos.x,
         pos.y,
-        selection.selectedBuildable.width,
-        selection.selectedBuildable.height,
-        null
+        width,
+        height,
+        null,
+        selection.selectedBuildable.requiresPalisadeOverlap
       );
-      render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid });
+      render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid, rotation: selection.previewRotation });
     }
   };
 
@@ -256,20 +328,49 @@ export const PlannerCanvas: React.FC<any> = ({
     if (selection.selectedBuildable && selection.selectedBuildable.usesLineTool) {
       if (!selection.lineTool.isActive()) {
         // Start new line
-        selection.lineTool.startLine(pos);
+        selection.lineTool.startLine(pos, gridManager.getItems());
         setStateChanged(true);
         render();
-      } else if (selection.lineTool.isCornerPoint(pos)) {
-        // Extend line from current endpoint
-        selection.lineTool.extendLine(pos);
-        render();
       } else {
-        // Complete the line and place all items
-        const allCells = selection.lineTool.getAllCells();
+        // Check if clicking at the start point (place single corner post)
+        const startPoint = selection.lineTool.getStartPoint();
+        const clickingAtStart = startPoint && startPoint.x === pos.x && startPoint.y === pos.y;
+        
+        if (clickingAtStart) {
+          // Place a single corner post
+          const existingItem = gridManager.getItemAt(pos.x, pos.y);
+          if (existingItem) {
+            gridManager.removeItem(existingItem);
+          }
+          
+          const newItem = selection.selectedBuildable.createPlacedItem(pos.x, pos.y, 'corner');
+          if (gridManager.addItem(newItem)) {
+            newItem.preloadImage().then(() => render());
+            if (onStateChange) onStateChange();
+          }
+          
+          // Reset and start new line from clicked position
+          selection.lineTool.reset();
+          selection.lineTool.startLine(pos, gridManager.getItems());
+          setStateChanged(true);
+          render();
+          return;
+        }
+        
+        // Place the current line
+        const allCells = selection.lineTool.getAllCellsWithCorners(gridManager.getItems());
         let placedCount = 0;
         
         for (const cell of allCells) {
-          const newItem = selection.selectedBuildable.createPlacedItem(cell.x, cell.y);
+          // If this is a corner piece, remove any existing item at this position
+          if (cell.orientation === 'corner') {
+            const existingItem = gridManager.getItemAt(cell.x, cell.y);
+            if (existingItem) {
+              gridManager.removeItem(existingItem);
+            }
+          }
+          
+          const newItem = selection.selectedBuildable.createPlacedItem(cell.x, cell.y, cell.orientation);
           if (gridManager.addItem(newItem)) {
             newItem.preloadImage().then(() => render());
             placedCount++;
@@ -278,12 +379,12 @@ export const PlannerCanvas: React.FC<any> = ({
         
         if (placedCount > 0) {
           if (onStateChange) onStateChange();
-          render();
         }
         
-        // Reset line tool for next line
+        // Reset line tool but keep palisade selected
         selection.lineTool.reset();
-        setStateChanged(false);
+        setStateChanged(true);
+        render();
       }
       return;
     }
@@ -311,18 +412,56 @@ export const PlannerCanvas: React.FC<any> = ({
     return 'default';
   };
 
-  // Handle escape key to deselect
+  // Handle escape key to place line tool items and deselect, and R key to rotate
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        selection.clearAll();
-        measurementTool.reset();
-        render();
+        // If line tool is active, place current line and exit drawing mode
+        if (selection.lineTool.isActive() && selection.selectedBuildable) {
+          const allCells = selection.lineTool.getAllCellsWithCorners(gridManager.getItems());
+          let placedCount = 0;
+          
+          for (const cell of allCells) {
+            const newItem = selection.selectedBuildable.createPlacedItem(cell.x, cell.y, cell.orientation);
+            if (gridManager.addItem(newItem)) {
+              newItem.preloadImage().then(() => render());
+              placedCount++;
+            }
+          }
+          
+          if (placedCount > 0 && onStateChange) {
+            onStateChange();
+          }
+          
+          // Reset line tool but keep palisade selected
+          selection.lineTool.reset();
+          setStateChanged(false);
+          render();
+        } else {
+          // Only clear all selections if not in line drawing mode
+          selection.clearAll();
+          measurementTool.reset();
+          render();
+        }
+      } else if (e.key === 'r' || e.key === 'R') {
+        // Rotate the preview if a buildable is selected (but not line tool items)
+        if (selection.selectedBuildable && !selection.selectedBuildable.usesLineTool && !measurementTool.isToolActive()) {
+          selection.rotatePreview();
+          render();
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selection, measurementTool, render]);
+  }, [selection, measurementTool, gridManager, render, onStateChange]);
+
+  const handleWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    // Zoom in when scrolling up (negative deltaY), out when scrolling down
+    const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1;
+    handleZoom(zoomDelta);
+    render();
+  };
 
   return (
     <div className="canvas-container">
@@ -333,6 +472,7 @@ export const PlannerCanvas: React.FC<any> = ({
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onClick={handleClick}
+        onWheel={handleWheel}
         style={{ cursor: getCursorStyle() }}
       />
     </div>

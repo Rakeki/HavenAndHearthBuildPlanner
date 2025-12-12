@@ -1080,7 +1080,30 @@
     "color": "#696969",
     "image": "images/Palisade.png",
     "imageUrl": "https://ringofbrodgar.com/images/e/ea/Palisade.png",
+    "gridImage": "images/texture/palisade-wall.png",
     "usesLineTool": true
+  },
+  {
+    "name": "Palisade Gate L",
+    "category": "defense",
+    "width": 5,
+    "height": 1,
+    "color": "#696969",
+    "image": "images/Palisade.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/ea/Palisade.png",
+    "gridImage": "images/texture/palisade-wall-gate_l.png",
+    "requiresPalisadeOverlap": true
+  },
+  {
+    "name": "Palisade Gate S",
+    "category": "defense",
+    "width": 4,
+    "height": 1,
+    "color": "#696969",
+    "image": "images/Palisade.png",
+    "imageUrl": "https://ringofbrodgar.com/images/e/ea/Palisade.png",
+    "gridImage": "images/texture/palisade-wall-gate_s.png",
+    "requiresPalisadeOverlap": true
   },
   {
     "name": "Personal Claim",

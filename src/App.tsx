@@ -26,6 +26,7 @@ function App() {
     pavingManager,
     measurementTool,
     render,
+    handleZoom,
   } = useCanvas(gridSize, showBuildables);
 
   const selection = useSelection();
@@ -68,7 +69,7 @@ function App() {
       measurementTool.deactivate();
     }
     render(selection.selectedPlaced);
-  }, [selection.selectedPlaced, selection.selectedBuildable, selection.selectedPaving, selection.erasePavingMode, measurementTool, render]);
+  }, [selection.selectedPlaced, selection.selectedBuildable, selection.selectedPaving, selection.erasePavingMode, selection.previewRotation, measurementTool, render]);
 
   // Initial render after renderer is ready and loading is complete
   useEffect(() => {
@@ -239,6 +240,7 @@ function App() {
             selection={selection}
             render={render}
             onStateChange={saveCurrentState}
+            handleZoom={handleZoom}
           />
           
           <InfoPanel

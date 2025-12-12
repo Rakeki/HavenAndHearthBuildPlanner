@@ -11,6 +11,12 @@ export interface Point {
   y: number;
 }
 
+export interface PointWithOrientation {
+  x: number;
+  y: number;
+  orientation: 'horizontal' | 'vertical' | 'corner';
+}
+
 export interface BuildableItemData {
   name: string;
   category: Category;
@@ -19,7 +25,9 @@ export interface BuildableItemData {
   color: string;
   image?: string;
   imageUrl?: string;
+  gridImage?: string;
   usesLineTool?: boolean;
+  requiresPalisadeOverlap?: boolean;
 }
 
 export interface PavingTypeData {
@@ -49,7 +57,11 @@ export interface PlacedItemData {
   color: string;
   image?: string;
   imageUrl?: string;
+  gridImage?: string;
   usesLineTool?: boolean;
+  requiresPalisadeOverlap?: boolean;
+  orientation?: 'horizontal' | 'vertical' | 'corner';
+  rotation?: number; // 0, 90, 180, or 270 degrees
 }
 
 export interface PavingData {

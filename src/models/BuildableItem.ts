@@ -11,7 +11,9 @@ export class BuildableItem {
   public readonly color: string;
   public readonly image?: string;
   public readonly imageUrl?: string;
+  public readonly gridImage?: string;
   public readonly usesLineTool: boolean;
+  public readonly requiresPalisadeOverlap: boolean;
   private imageElement?: HTMLImageElement;
 
   constructor(data: BuildableItemData) {
@@ -22,7 +24,9 @@ export class BuildableItem {
     this.color = data.color;
     this.image = data.image;
     this.imageUrl = data.imageUrl;
+    this.gridImage = data.gridImage;
     this.usesLineTool = data.usesLineTool || false;
+    this.requiresPalisadeOverlap = data.requiresPalisadeOverlap || false;
   }
 
   /**
@@ -35,14 +39,15 @@ export class BuildableItem {
         return;
       }
 
-      const img = new Image();
-      const src = this.image || this.imageUrl;
+      // Use gridImage if available, otherwise fall back to image or imageUrl
+      const src = this.gridImage || this.image || this.imageUrl;
       
       if (!src) {
         reject(new Error('No image URL available'));
         return;
       }
 
+      const img = new Image();
       img.onload = () => {
         this.imageElement = img;
         resolve(img);
@@ -62,18 +67,31 @@ export class BuildableItem {
   /**
    * Create a PlacedItem from this buildable at the given position
    */
-  public createPlacedItem(x: number, y: number): PlacedItem {
+  public createPlacedItem(x: number, y: number, orientation?: 'horizontal' | 'vertical' | 'corner', rotation?: number): PlacedItem {
+    // Apply rotation: 90 or 270 degrees swaps width and height
+    const shouldSwap = rotation === 90 || rotation === 270;
+    const width = shouldSwap ? this.height : this.width;
+    const height = shouldSwap ? this.width : this.height;
+    
+    // Items with requiresPalisadeOverlap (gates, walls, fences) don't need overlap requirement
+    // when placed since we handle palisade replacement manually in the placement logic
+    const requiresOverlap = false;
+    
     return new PlacedItem({
       name: this.name,
       category: this.category as any,
       x,
       y,
-      width: this.width,
-      height: this.height,
+      width,
+      height,
       color: this.color,
       image: this.image,
       imageUrl: this.imageUrl,
+      gridImage: this.gridImage,
       usesLineTool: this.usesLineTool,
+      requiresPalisadeOverlap: requiresOverlap,
+      orientation,
+      rotation: rotation || 0,
     }, this.imageElement);
   }
 }
@@ -91,7 +109,11 @@ export class PlacedItem {
   public readonly color: string;
   public readonly image?: string;
   public readonly imageUrl?: string;
+  public readonly gridImage?: string;
   public readonly usesLineTool: boolean;
+  public readonly requiresPalisadeOverlap: boolean;
+  public readonly orientation?: 'horizontal' | 'vertical' | 'corner';
+  public readonly rotation: number; // 0, 90, 180, or 270 degrees
   private imageElement?: HTMLImageElement;
 
   constructor(data: PlacedItemData, imageElement?: HTMLImageElement) {
@@ -104,7 +126,11 @@ export class PlacedItem {
     this.color = data.color;
     this.image = data.image;
     this.imageUrl = data.imageUrl;
+    this.gridImage = data.gridImage;
     this.usesLineTool = data.usesLineTool || false;
+    this.requiresPalisadeOverlap = data.requiresPalisadeOverlap || false;
+    this.orientation = data.orientation;
+    this.rotation = data.rotation || 0;
     this.imageElement = imageElement;
   }
 
@@ -178,14 +204,15 @@ export class PlacedItem {
         return;
       }
 
-      const img = new Image();
-      const src = this.image || this.imageUrl;
+      // Use gridImage if available, otherwise fall back to image or imageUrl
+      const src = this.gridImage || this.image || this.imageUrl;
       
       if (!src) {
         reject(new Error('No image URL available'));
         return;
       }
 
+      const img = new Image();
       img.onload = () => {
         this.imageElement = img;
         resolve(img);
@@ -209,6 +236,9 @@ export class PlacedItem {
       color: this.color,
       image: this.image,
       imageUrl: this.imageUrl,
+      gridImage: this.gridImage,
+      orientation: this.orientation,
+      rotation: this.rotation,
     };
   }
 }

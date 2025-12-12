@@ -13,6 +13,7 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
   const [pavingManager] = useState(() => new PavingManager());
   const [measurementTool] = useState(() => new MeasurementTool());
   const [canvasReady, setCanvasReady] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1); // 1 = 100%, 0.5 = 50%, 2 = 200%
 
   // Check when canvas is mounted and ready
   useEffect(() => {
@@ -31,7 +32,8 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const cellSize = 20;
+    const baseCellSize = 32;
+    const cellSize = baseCellSize * zoomLevel;
     canvas.width = gridSize * cellSize;
     canvas.height = gridSize * cellSize;
 
@@ -45,34 +47,36 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     if (showBuildables) {
       newRenderer.drawItems(gridManager.getItems(), null);
     }
-  }, [canvasReady, gridSize, pavingManager, gridManager, showBuildables]);
+  }, [canvasReady, gridSize, pavingManager, gridManager, showBuildables, zoomLevel]);
 
-  // Update grid size when it changes
+  // Update grid size or zoom when they change
   useEffect(() => {
     if (!renderer) return;
     
     const canvas = canvasRef.current;
     if (!canvas) return;
     
-    const cellSize = 20;
+    const baseCellSize = 32;
+    const cellSize = baseCellSize * zoomLevel;
     canvas.width = gridSize * cellSize;
     canvas.height = gridSize * cellSize;
     
     gridManager.setGridSize(gridSize);
     renderer.setGridSize(gridSize);
+    renderer.setCellSize(cellSize);
     
     renderer.clear();
     renderer.drawGrid(pavingManager);
     if (showBuildables) {
       renderer.drawItems(gridManager.getItems(), null);
     }
-  }, [gridSize]);
+  }, [gridSize, zoomLevel]);
 
   const render = useCallback(
     (
       selectedItem: PlacedItem | null = null, 
       previewPoint?: Point, 
-      previewBuildable?: { buildable: any, isValid: boolean },
+      previewBuildable?: { buildable: any, isValid: boolean, rotation?: number },
       lineTool?: any
     ) => {
       if (!renderer) return;
@@ -95,20 +99,36 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
       // Draw buildable preview if available (for non-line tools)
       else if (previewBuildable && previewPoint && !previewBuildable.buildable?.usesLineTool) {
         const img = previewBuildable.buildable.getImageElement?.();
+        
+        // Apply rotation to dimensions
+        const rotation = previewBuildable.rotation || 0;
+        const shouldSwap = rotation === 90 || rotation === 270;
+        const width = shouldSwap ? previewBuildable.buildable.height : previewBuildable.buildable.width;
+        const height = shouldSwap ? previewBuildable.buildable.width : previewBuildable.buildable.height;
+        
         renderer.drawItemPreview(
           previewPoint.x,
           previewPoint.y,
-          previewBuildable.buildable.width,
-          previewBuildable.buildable.height,
+          width,
+          height,
           previewBuildable.buildable.color,
           previewBuildable.isValid,
           img,
-          previewBuildable.buildable.name
+          previewBuildable.buildable.name,
+          rotation
         );
       }
     },
     [renderer, gridManager, pavingManager, measurementTool, showBuildables]
   );
+
+  const handleZoom = useCallback((delta: number) => {
+    setZoomLevel(prev => {
+      const newZoom = prev + delta;
+      // Clamp between 0.25 (25%) and 3 (300%)
+      return Math.max(0.25, Math.min(3, newZoom));
+    });
+  }, []);
 
   return {
     canvasRef,
@@ -117,5 +137,7 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     pavingManager,
     measurementTool,
     render,
+    zoomLevel,
+    handleZoom,
   };
 }

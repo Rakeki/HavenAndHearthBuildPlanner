@@ -1,4 +1,4 @@
-import { Point } from './types';
+import { Point, PointWithOrientation } from './types';
 
 /**
  * Manages line drawing for fences, walls, and palisades
@@ -7,8 +7,7 @@ import { Point } from './types';
 export class LineTool {
   private startPoint: Point | null = null;
   private currentDirection: 'horizontal' | 'vertical' | null = null;
-  private placedSegments: Point[][] = [];
-  private currentSegment: Point[] = [];
+  private currentSegment: PointWithOrientation[] = [];
 
   /**
    * Check if the line tool is currently active
@@ -32,25 +31,22 @@ export class LineTool {
   }
 
   /**
-   * Get all placed segments
-   */
-  public getPlacedSegments(): Point[][] {
-    return this.placedSegments;
-  }
-
-  /**
    * Get the current segment being drawn
    */
-  public getCurrentSegment(): Point[] {
+  public getCurrentSegment(): PointWithOrientation[] {
     return this.currentSegment;
   }
 
   /**
    * Start a new line at the given point
+   * Checks if the starting point should be a corner based on existing items
    */
-  public startLine(point: Point): void {
+  public startLine(point: Point, placedItems: any[] = []): void {
     this.startPoint = point;
     this.currentDirection = null;
+    
+    // Check if starting point connects to existing palisade
+    // We don't know the orientation yet, but we can mark it for corner checking
     this.currentSegment = [point];
   }
 
@@ -58,7 +54,7 @@ export class LineTool {
    * Update the current line endpoint
    * Constrains movement to horizontal or vertical based on initial direction
    */
-  public updateEndPoint(point: Point): Point[] {
+  public updateEndPoint(point: Point): PointWithOrientation[] {
     if (!this.startPoint) return [];
 
     // Determine direction if not set
@@ -67,15 +63,15 @@ export class LineTool {
       const dy = Math.abs(point.y - this.startPoint.y);
       
       if (dx === 0 && dy === 0) {
-        return [this.startPoint];
+        return [{ ...this.startPoint, orientation: 'horizontal' }];
       }
       
       // Set direction based on which axis has more movement
       this.currentDirection = dx >= dy ? 'horizontal' : 'vertical';
     }
 
-    // Calculate cells along the line
-    const cells: Point[] = [];
+    // Calculate cells along the line with orientation
+    const cells: PointWithOrientation[] = [];
     
     if (this.currentDirection === 'horizontal') {
       // Horizontal line - keep y constant
@@ -84,7 +80,7 @@ export class LineTool {
       const endX = Math.max(this.startPoint.x, point.x);
       
       for (let x = startX; x <= endX; x++) {
-        cells.push({ x, y });
+        cells.push({ x, y, orientation: 'horizontal' });
       }
     } else {
       // Vertical line - keep x constant
@@ -93,7 +89,7 @@ export class LineTool {
       const endY = Math.max(this.startPoint.y, point.y);
       
       for (let y = startY; y <= endY; y++) {
-        cells.push({ x, y });
+        cells.push({ x, y, orientation: 'vertical' });
       }
     }
 
@@ -113,63 +109,51 @@ export class LineTool {
   }
 
   /**
-   * Extend the line from the current endpoint in a new direction
+   * Complete the current line and return cells
    */
-  public extendLine(point: Point): void {
-    if (this.currentSegment.length === 0) return;
-
-    // Save the current segment
-    if (this.currentSegment.length > 1) {
-      this.placedSegments.push([...this.currentSegment]);
-    }
-
-    // Start a new segment from the last point
-    const lastPoint = this.currentSegment[this.currentSegment.length - 1];
-    this.startPoint = lastPoint;
-    this.currentDirection = null; // Reset direction
-    this.currentSegment = [lastPoint];
-    
-    // Update with the new endpoint
-    this.updateEndPoint(point);
-  }
-
-  /**
-   * Complete the current line and save it
-   */
-  public completeLine(): Point[][] {
-    if (this.currentSegment.length > 1) {
-      this.placedSegments.push([...this.currentSegment]);
-    }
-
-    const allSegments = [...this.placedSegments];
+  public completeLine(): PointWithOrientation[] {
+    const cells = [...this.currentSegment];
     this.reset();
-    return allSegments;
+    return cells;
   }
 
   /**
    * Get all cells that are part of the current line (for preview)
    */
-  public getAllCells(): Point[] {
-    const allCells: Point[] = [];
+  public getAllCells(): PointWithOrientation[] {
+    return [...this.currentSegment];
+  }
+  
+  /**
+   * Get all cells with corners marked at connection points
+   */
+  public getAllCellsWithCorners(placedItems: any[]): PointWithOrientation[] {
+    if (this.currentSegment.length === 0) return [];
     
-    // Add all placed segments
-    for (const segment of this.placedSegments) {
-      allCells.push(...segment);
+    const result = [...this.currentSegment];
+    
+    // Single cell placement should always be a corner post
+    if (result.length === 1) {
+      result[0] = { ...result[0], orientation: 'corner' };
+      return result;
     }
     
-    // Add current segment
-    allCells.push(...this.currentSegment);
+    // First cell is always a corner (lines always start with corner posts)
+    result[0] = { ...result[0], orientation: 'corner' };
     
-    // Remove duplicates
-    const uniqueCells = new Map<string, Point>();
-    for (const cell of allCells) {
-      const key = `${cell.x},${cell.y}`;
-      if (!uniqueCells.has(key)) {
-        uniqueCells.set(key, cell);
-      }
+    // Check if last cell connects to existing palisade with different orientation
+    const lastCell = result[result.length - 1];
+    const existingAtEnd = placedItems.find(
+      item => item.x === lastCell.x && item.y === lastCell.y && 
+              item.usesLineTool && item.orientation &&
+              item.orientation !== 'corner' &&
+              item.orientation !== lastCell.orientation
+    );
+    if (existingAtEnd) {
+      result[result.length - 1] = { ...lastCell, orientation: 'corner' };
     }
     
-    return Array.from(uniqueCells.values());
+    return result;
   }
 
   /**
@@ -178,7 +162,6 @@ export class LineTool {
   public reset(): void {
     this.startPoint = null;
     this.currentDirection = null;
-    this.placedSegments = [];
     this.currentSegment = [];
   }
 

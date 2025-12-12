@@ -11,9 +11,11 @@ export function useSelection() {
   const [erasePavingMode, setErasePavingMode] = useState(false);
   const [pavingShapeMode, setPavingShapeMode] = useState<ShapeMode>('line');
   const [lineTool] = useState(() => new LineTool());
+  const [previewRotation, setPreviewRotation] = useState<number>(0); // 0, 90, 180, 270
 
   const selectBuildable = (item: BuildableItem | null) => {
     setSelectedBuildable(item);
+    setPreviewRotation(0); // Reset rotation when selecting a new buildable
     if (item) {
       // Clear paving and placed selections when selecting a buildable
       setSelectedPaving(null);
@@ -64,11 +66,16 @@ export function useSelection() {
     setSelectedPlaced(null);
     setSelectedPaving(null);
     setErasePavingMode(false);
+    setPreviewRotation(0);
     lineTool.reset();
   };
 
   const setShapeMode = (mode: ShapeMode) => {
     setPavingShapeMode(mode);
+  };
+
+  const rotatePreview = () => {
+    setPreviewRotation((prev) => (prev + 90) % 360);
   };
 
   return {
@@ -78,11 +85,13 @@ export function useSelection() {
     erasePavingMode,
     pavingShapeMode,
     lineTool,
+    previewRotation,
     selectBuildable,
     selectPlaced,
     selectPaving,
     toggleEraseMode,
     clearAll,
     setShapeMode,
+    rotatePreview,
   };
 }

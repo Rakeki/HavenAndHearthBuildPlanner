@@ -11,11 +11,24 @@ export class CanvasRenderer {
   private ctx: CanvasRenderingContext2D;
   private cellSize: number;
   private gridSize: number;
+  private cornerImageCache: Map<string, HTMLImageElement> = new Map();
 
-  constructor(ctx: CanvasRenderingContext2D, cellSize: number = 20) {
+  constructor(ctx: CanvasRenderingContext2D, cellSize: number = 30) {
     this.ctx = ctx;
     this.cellSize = cellSize;
     this.gridSize = 50;
+    this.preloadCornerImages();
+  }
+
+  /**
+   * Preload corner images
+   */
+  private preloadCornerImages(): void {
+    const cornerImg = new Image();
+    cornerImg.src = 'images/texture/palisade-wall-corner.png';
+    cornerImg.onload = () => {
+      this.cornerImageCache.set('palisade-corner', cornerImg);
+    };
   }
 
   /**
@@ -30,6 +43,13 @@ export class CanvasRenderer {
    */
   public getCellSize(): number {
     return this.cellSize;
+  }
+
+  /**
+   * Set the cell size (for zooming)
+   */
+  public setCellSize(size: number): void {
+    this.cellSize = size;
   }
 
   /**
@@ -180,10 +200,53 @@ export class CanvasRenderer {
       const width = item.width * this.cellSize;
       const height = item.height * this.cellSize;
 
-      // For line tool items (fences/walls), draw as solid blocks without icons
+      // For line tool items (fences/walls), draw with texture if available
       if (item.usesLineTool) {
-        this.ctx.fillStyle = item.color;
-        this.ctx.fillRect(x, y, width, height);
+        let img = item.getImageElement();
+        const isCorner = item.orientation === 'corner';
+        
+        // Use corner image if this is marked as a corner piece
+        if (isCorner) {
+          const cornerImg = this.cornerImageCache.get('palisade-corner');
+          if (cornerImg?.complete) {
+            img = cornerImg;
+          }
+        }
+        
+        if (img?.complete) {
+          // Check orientation for rotation (corners don't rotate)
+          const isVertical = item.orientation === 'vertical';
+          
+          if (isVertical) {
+            // Save context state
+            this.ctx.save();
+            
+            // Move to center of the item
+            this.ctx.translate(x + width / 2, y + height / 2);
+            
+            // Rotate 90 degrees clockwise
+            this.ctx.rotate(Math.PI / 2);
+            
+            // Draw image centered (note: width and height are swapped for rotation)
+            this.ctx.drawImage(
+              img,
+              -height / 2,
+              -width / 2,
+              height,
+              width
+            );
+            
+            // Restore context state
+            this.ctx.restore();
+          } else {
+            // Draw horizontally or corner (no rotation)
+            this.ctx.drawImage(img, x, y, width, height);
+          }
+        } else {
+          // Fallback to color if no image
+          this.ctx.fillStyle = item.color;
+          this.ctx.fillRect(x, y, width, height);
+        }
         
         // Only draw border if selected
         if (selectedItem === item) {
@@ -193,26 +256,60 @@ export class CanvasRenderer {
         }
       } else {
         // Regular items - draw with icons/images and borders
-        // Draw background color
-        this.ctx.fillStyle = item.color;
-        this.ctx.fillRect(x, y, width, height);
+        // Don't draw background for gates (they should be transparent over palisades)
+        const isGate = item.name.includes('Gate');
+        
+        if (!isGate) {
+          // Draw background color
+          this.ctx.fillStyle = item.color;
+          this.ctx.fillRect(x, y, width, height);
+        }
 
-        // Draw border
-        this.ctx.strokeStyle = selectedItem === item ? '#FFD700' : '#000';
-        this.ctx.lineWidth = selectedItem === item ? 3 : 2;
-        this.ctx.strokeRect(x, y, width, height);
+        // Draw border (only if selected for gates)
+        if (selectedItem === item || !isGate) {
+          this.ctx.strokeStyle = selectedItem === item ? '#FFD700' : '#000';
+          this.ctx.lineWidth = selectedItem === item ? 3 : 2;
+          this.ctx.strokeRect(x, y, width, height);
+        }
 
         // Draw image if available
         const img = item.getImageElement();
         if (img?.complete) {
-          const padding = 4;
-          this.ctx.drawImage(
-            img,
-            x + padding,
-            y + padding,
-            width - padding * 2,
-            height - padding * 2
-          );
+          // No padding for gates, small padding for other items
+          const padding = isGate ? 0 : 4;
+          const rotation = item.rotation || 0;
+          
+          if (rotation !== 0) {
+            // Save context state
+            this.ctx.save();
+            
+            // Move to center of the item
+            this.ctx.translate(x + width / 2, y + height / 2);
+            
+            // Rotate by the specified angle
+            this.ctx.rotate((rotation * Math.PI) / 180);
+            
+            // Draw image centered
+            this.ctx.drawImage(
+              img,
+              -width / 2 + padding,
+              -height / 2 + padding,
+              width - padding * 2,
+              height - padding * 2
+            );
+            
+            // Restore context state
+            this.ctx.restore();
+          } else {
+            // No rotation - draw normally
+            this.ctx.drawImage(
+              img,
+              x + padding,
+              y + padding,
+              width - padding * 2,
+              height - padding * 2
+            );
+          }
         } else {
           // Draw name as text fallback
           this.ctx.fillStyle = '#fff';
@@ -236,15 +333,20 @@ export class CanvasRenderer {
   /**
    * Draw a preview of an item being placed
    */
-  public drawItemPreview(x: number, y: number, width: number, height: number, color: string, isValid: boolean, imageElement?: HTMLImageElement | null, name?: string): void {
+  public drawItemPreview(x: number, y: number, width: number, height: number, color: string, isValid: boolean, imageElement?: HTMLImageElement | null, name?: string, rotation?: number): void {
     const pixelX = x * this.cellSize;
     const pixelY = y * this.cellSize;
     const pixelWidth = width * this.cellSize;
     const pixelHeight = height * this.cellSize;
 
-    this.ctx.globalAlpha = 0.7;
-    this.ctx.fillStyle = isValid ? color : '#ff0000';
-    this.ctx.fillRect(pixelX, pixelY, pixelWidth, pixelHeight);
+    // Don't draw background for gates
+    const isGate = name?.includes('Gate');
+    
+    if (!isGate) {
+      this.ctx.globalAlpha = 0.7;
+      this.ctx.fillStyle = isValid ? color : '#ff0000';
+      this.ctx.fillRect(pixelX, pixelY, pixelWidth, pixelHeight);
+    }
 
     this.ctx.strokeStyle = isValid ? '#00ff00' : '#ff0000';
     this.ctx.lineWidth = 3;
@@ -254,14 +356,41 @@ export class CanvasRenderer {
 
     // Draw image if available
     if (imageElement?.complete) {
-      const padding = 4;
-      this.ctx.drawImage(
-        imageElement,
-        pixelX + padding,
-        pixelY + padding,
-        pixelWidth - padding * 2,
-        pixelHeight - padding * 2
-      );
+      // No padding for gates, small padding for other items
+      const padding = isGate ? 0 : 4;
+      const rot = rotation || 0;
+      
+      if (rot !== 0) {
+        // Save context state
+        this.ctx.save();
+        
+        // Move to center of the preview
+        this.ctx.translate(pixelX + pixelWidth / 2, pixelY + pixelHeight / 2);
+        
+        // Rotate by the specified angle
+        this.ctx.rotate((rot * Math.PI) / 180);
+        
+        // Draw image centered
+        this.ctx.drawImage(
+          imageElement,
+          -pixelWidth / 2 + padding,
+          -pixelHeight / 2 + padding,
+          pixelWidth - padding * 2,
+          pixelHeight - padding * 2
+        );
+        
+        // Restore context state
+        this.ctx.restore();
+      } else {
+        // No rotation - draw normally
+        this.ctx.drawImage(
+          imageElement,
+          pixelX + padding,
+          pixelY + padding,
+          pixelWidth - padding * 2,
+          pixelHeight - padding * 2
+        );
+      }
     } else if (name) {
       // Draw name as text fallback
       this.ctx.fillStyle = '#fff';
@@ -388,6 +517,7 @@ export class CanvasRenderer {
     if (!lineTool.isActive()) return;
 
     const cells = lineTool.getAllCells();
+    let img = buildable.getImageElement();
 
     cells.forEach((cell, index) => {
       const pixelX = cell.x * this.cellSize;
@@ -396,10 +526,52 @@ export class CanvasRenderer {
       // Check if this cell can be placed
       const isValid = gridManager.canPlaceItem(cell.x, cell.y, 1, 1, null);
 
-      // Draw cell as solid color block (no icon)
+      // Draw cell with texture if available, otherwise use color
       this.ctx.globalAlpha = 0.7;
-      this.ctx.fillStyle = isValid ? buildable.color : '#ff0000';
-      this.ctx.fillRect(pixelX, pixelY, this.cellSize, this.cellSize);
+      
+      // Use different image for corners
+      let cellImg = img;
+      const isCorner = cell.orientation === 'corner';
+      if (isCorner) {
+        const cornerImg = this.cornerImageCache.get('palisade-corner');
+        if (cornerImg?.complete) {
+          cellImg = cornerImg;
+        }
+      }
+      
+      if (cellImg?.complete) {
+        const isVertical = cell.orientation === 'vertical';
+        
+        if (isVertical) {
+          // Save context state
+          this.ctx.save();
+          
+          // Move to center of the cell
+          this.ctx.translate(pixelX + this.cellSize / 2, pixelY + this.cellSize / 2);
+          
+          // Rotate 90 degrees clockwise
+          this.ctx.rotate(Math.PI / 2);
+          
+          // Draw image centered
+          this.ctx.drawImage(
+            cellImg,
+            -this.cellSize / 2,
+            -this.cellSize / 2,
+            this.cellSize,
+            this.cellSize
+          );
+          
+          // Restore context state
+          this.ctx.restore();
+        } else {
+          // Draw horizontally or corner
+          this.ctx.drawImage(cellImg, pixelX, pixelY, this.cellSize, this.cellSize);
+        }
+      } else {
+        // Fallback to color
+        this.ctx.fillStyle = isValid ? buildable.color : '#ff0000';
+        this.ctx.fillRect(pixelX, pixelY, this.cellSize, this.cellSize);
+      }
 
       // Draw border - highlight corners/endpoints
       const isEndpoint = index === 0 || index === cells.length - 1;

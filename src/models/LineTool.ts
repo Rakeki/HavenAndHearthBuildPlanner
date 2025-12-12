@@ -46,8 +46,8 @@ export class LineTool {
     this.currentDirection = null;
     
     // Check if starting point connects to existing palisade
-    // We don't know the orientation yet, but we can mark it for corner checking
-    this.currentSegment = [point];
+    // We don't know the orientation yet, but we can mark it as corner initially
+    this.currentSegment = [{ ...point, orientation: 'corner' }];
   }
 
   /**
@@ -127,7 +127,7 @@ export class LineTool {
   /**
    * Get all cells with corners marked at connection points
    */
-  public getAllCellsWithCorners(placedItems: any[]): PointWithOrientation[] {
+  public getAllCellsWithCorners(_placedItems: any[]): PointWithOrientation[] {
     if (this.currentSegment.length === 0) return [];
     
     const result = [...this.currentSegment];
@@ -138,20 +138,24 @@ export class LineTool {
       return result;
     }
     
+    // Check if first cell is adjacent to a gate edge (allows connecting to gate)
+    // const firstCell = result[0];
+    // Variable kept for future gate connection logic
+    // const gateAtStart = placedItems.find(
+    //   item => item.name?.includes('Gate') && 
+    //           // Check if adjacent to the gate (next to an edge)
+    //           ((item.width > item.height && 
+    //             ((item.x - 1 === firstCell.x || item.x + item.width === firstCell.x) && item.y === firstCell.y)) ||
+    //            (item.height > item.width && 
+    //             item.x === firstCell.x && (item.y - 1 === firstCell.y || item.y + item.height === firstCell.y)))
+    // );
+    
     // First cell is always a corner (lines always start with corner posts)
     result[0] = { ...result[0], orientation: 'corner' };
     
-    // Check if last cell connects to existing palisade with different orientation
+    // Last cell is always a corner (lines always end with corner posts)
     const lastCell = result[result.length - 1];
-    const existingAtEnd = placedItems.find(
-      item => item.x === lastCell.x && item.y === lastCell.y && 
-              item.usesLineTool && item.orientation &&
-              item.orientation !== 'corner' &&
-              item.orientation !== lastCell.orientation
-    );
-    if (existingAtEnd) {
-      result[result.length - 1] = { ...lastCell, orientation: 'corner' };
-    }
+    result[result.length - 1] = { ...lastCell, orientation: 'corner' };
     
     return result;
   }

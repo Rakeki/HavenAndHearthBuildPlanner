@@ -136,6 +136,7 @@ export const PlannerCanvas: React.FC<any> = ({
         const isHorizontal = itemWidth > itemHeight;
         
         if (isHorizontal) {
+          
           // Horizontal item: check for horizontal palisades/walls to replace
           const palisadesToRemove = [];
           let hasPalisades = false;
@@ -188,7 +189,7 @@ export const PlannerCanvas: React.FC<any> = ({
       setLastPlacedCell(pos);
       setStateChanged(true);
       
-      // Place first buildable
+      // Place the gate/wall item
       const newItem = selection.selectedBuildable.createPlacedItem(pos.x, pos.y, undefined, selection.previewRotation);
       if (gridManager.addItem(newItem)) {
         newItem.preloadImage().then(() => render());
@@ -337,8 +338,30 @@ export const PlannerCanvas: React.FC<any> = ({
         const clickingAtStart = startPoint && startPoint.x === pos.x && startPoint.y === pos.y;
         
         if (clickingAtStart) {
-          // Place a single corner post
+          // Check if this position is at a gate edge
+          const items = gridManager.getItems();
+          const isAtGateEdge = items.some((item: any) => {
+            if (!item.name.includes('Gate')) return false;
+            
+            const isHorizontalGate = item.width > item.height;
+            if (isHorizontalGate) {
+              return item.y === pos.y && (item.x === pos.x || item.x + item.width - 1 === pos.x);
+            } else {
+              return item.x === pos.x && (item.y === pos.y || item.y + item.height - 1 === pos.y);
+            }
+          });
+          
+          // If at gate edge and there's already a palisade corner post, keep it
           const existingItem = gridManager.getItemAt(pos.x, pos.y);
+          if (isAtGateEdge && existingItem && existingItem.name === 'Palisade') {
+            // Don't replace - the gate edge post is already there
+            selection.lineTool.reset();
+            if (onStateChange) onStateChange();
+            render();
+            return;
+          }
+          
+          // Place a single corner post
           if (existingItem) {
             gridManager.removeItem(existingItem);
           }
@@ -361,16 +384,69 @@ export const PlannerCanvas: React.FC<any> = ({
         const allCells = selection.lineTool.getAllCellsWithCorners(gridManager.getItems());
         let placedCount = 0;
         
-        for (const cell of allCells) {
+        // Check if this line connects to a gate (first cell on or adjacent to gate)
+        const items = gridManager.getItems();
+        // const firstCell = allCells[0];
+        // Variable kept for future gate connection logic
+        // const connectsToGate = firstCell && items.some((item: any) => {
+        //   if (!item.name.includes('Gate')) return false;
+        //   
+        //   const isHorizontalGate = item.width > item.height;
+        //   if (isHorizontalGate) {
+        //     // Check if on or adjacent to left or right edge of gate
+        //     return item.y === firstCell.y && (
+        //       item.x - 1 === firstCell.x || 
+        //       item.x + item.width === firstCell.x || 
+        //       item.x === firstCell.x || 
+        //       item.x + item.width - 1 === firstCell.x
+        //     );
+        //   } else {
+        //     // Check if on or adjacent to top or bottom edge of gate
+        //     return item.x === firstCell.x && (
+        //       item.y - 1 === firstCell.y || 
+        //       item.y + item.height === firstCell.y ||
+        //       item.y === firstCell.y || 
+        //       item.y + item.height - 1 === firstCell.y
+        //     );
+        //   }
+        // });
+        
+        for (let i = 0; i < allCells.length; i++) {
+          const cell = allCells[i];
+          const existingItem = gridManager.getItemAt(cell.x, cell.y);
+          
+          // Check if this position overlaps with a gate (not just at edges, but anywhere on the gate)
+          const overlapsGate = items.some((item: any) => {
+            if (!item.name.includes('Gate')) return false;
+            return item.contains(cell.x, cell.y);
+          });
+          
+          // Skip placing on gates entirely
+          if (overlapsGate) {
+            placedCount++; // Count as successful for line validation
+            continue;
+          }
+          
+          // If there's an existing palisade with different orientation, update it to corner
+          if (cell.orientation === 'corner' && existingItem && 
+              existingItem.name === 'Palisade' &&
+              existingItem.orientation !== 'corner') {
+            // Update the existing palisade to be a corner instead of removing and re-adding
+            existingItem.orientation = 'corner';
+            existingItem.preloadImage().then(() => render());
+            placedCount++;
+            continue;
+          }
+          
           // If this is a corner piece, remove any existing item at this position
-          if (cell.orientation === 'corner') {
-            const existingItem = gridManager.getItemAt(cell.x, cell.y);
-            if (existingItem) {
+          if (cell.orientation === 'corner' && existingItem) {
+            if (existingItem.name === 'Palisade') {
               gridManager.removeItem(existingItem);
             }
           }
           
           const newItem = selection.selectedBuildable.createPlacedItem(cell.x, cell.y, cell.orientation);
+          
           if (gridManager.addItem(newItem)) {
             newItem.preloadImage().then(() => render());
             placedCount++;

@@ -121,8 +121,32 @@ export class GridManager {
       }
     }
 
-    // If item requires palisade overlap, ensure we found at least one
+    // Check if adjacent to a gate edge (for palisades connecting to gates)
+    let isAdjacentToGateEdge = false;
     if (requiresPalisadeOverlap && !hasOverlapWithPalisade) {
+      for (const item of this.items) {
+        if (item.name.includes('Gate')) {
+          const isHorizontalGate = item.width > item.height;
+          
+          if (isHorizontalGate) {
+            // Check if palisade is adjacent to left or right edge of horizontal gate
+            if (item.y === y && ((item.x - 1 === x) || (item.x + item.width === x))) {
+              isAdjacentToGateEdge = true;
+              break;
+            }
+          } else {
+            // Check if palisade is adjacent to top or bottom edge of vertical gate
+            if (item.x === x && ((item.y - 1 === y) || (item.y + item.height === y))) {
+              isAdjacentToGateEdge = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    
+    // If item requires palisade overlap, ensure we found at least one palisade OR adjacent to gate
+    if (requiresPalisadeOverlap && !hasOverlapWithPalisade && !isAdjacentToGateEdge) {
       return false;
     }
 

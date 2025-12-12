@@ -241,6 +241,7 @@ function App() {
             render={render}
             onStateChange={saveCurrentState}
             handleZoom={handleZoom}
+            dataService={dataService}
           />
           
           <InfoPanel

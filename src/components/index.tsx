@@ -89,6 +89,7 @@ export const PlannerCanvas: React.FC<any> = ({
   render,
   onStateChange,
   handleZoom,
+  onHoverChange,
 }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStart, setDragStart] = React.useState<any>(null);
@@ -96,6 +97,11 @@ export const PlannerCanvas: React.FC<any> = ({
   const [stateChanged, setStateChanged] = React.useState(false);
   const [isPanning, setIsPanning] = React.useState(false);
   const [panStart, setPanStart] = React.useState<{x: number, y: number} | null>(null);
+  const [isSelecting, setIsSelecting] = React.useState(false);
+  const [selectionStart, setSelectionStart] = React.useState<{x: number, y: number} | null>(null);
+  const [selectionEnd, setSelectionEnd] = React.useState<{x: number, y: number} | null>(null);
+  const [justCompletedSelection, setJustCompletedSelection] = React.useState(false);
+  const [previewPavingCells, setPreviewPavingCells] = React.useState<Array<{x: number, y: number}>>([]);
 
   const getGridPos = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -119,19 +125,46 @@ export const PlannerCanvas: React.FC<any> = ({
     // Don't handle placement when measuring
     if (measurementTool.isToolActive()) return;
 
+    // Start selection box if nothing is selected and left click without modifiers on empty space
+    if (!selection.selectedBuildable && !selection.selectedPaving && !selection.erasePavingMode && 
+        e.button === 0 && !selection.lineTool.isActive()) {
+      const clickedItem = gridManager.getItemAt(pos.x, pos.y);
+      
+      // If clicking on empty space, start selection box
+      if (!clickedItem) {
+        setIsSelecting(true);
+        setSelectionStart(pos);
+        setSelectionEnd(pos);
+        return;
+      }
+    }
+
     // Handle paving drag
     if (selection.selectedPaving || selection.erasePavingMode) {
       setIsDragging(true);
       setDragStart(pos);
       setStateChanged(true);
       
-      // Place/erase single cell
-      if (selection.erasePavingMode) {
-        pavingManager.removePaving(pos.x, pos.y);
-      } else if (selection.selectedPaving) {
-        pavingManager.placePaving(pos.x, pos.y, selection.selectedPaving);
+      // For single-cell mode (line with no drag), place/erase immediately
+      // For shape modes (rectangle/circle), start preview mode
+      if (selection.pavingShapeMode === 'line') {
+        // Single cell placement in line mode
+        if (selection.erasePavingMode) {
+          pavingManager.removePaving(pos.x, pos.y);
+        } else if (selection.selectedPaving) {
+          pavingManager.placePaving(pos.x, pos.y, selection.selectedPaving);
+        }
+        render();
+      } else {
+        // Start preview mode for rectangle/circle
+        const cells = [{ x: pos.x, y: pos.y }];
+        setPreviewPavingCells(cells);
+        render(selection.selectedPlaced, undefined, undefined, undefined, undefined, undefined, undefined, {
+          cells,
+          paving: selection.selectedPaving,
+          isErase: selection.erasePavingMode
+        });
       }
-      render();
     }
     // Handle buildable drag (non-line tool items)
     else if (selection.selectedBuildable && !selection.selectedBuildable.usesLineTool) {
@@ -225,6 +258,20 @@ export const PlannerCanvas: React.FC<any> = ({
     const pos = getGridPos(e);
     if (!pos) return;
 
+    // Handle selection box dragging
+    if (isSelecting && selectionStart) {
+      setSelectionEnd(pos);
+      // Get items that would be selected and preview them
+      const itemsInBox = gridManager.getItemsInBounds(
+        selectionStart.x,
+        selectionStart.y,
+        pos.x,
+        pos.y
+      );
+      render(selection.selectedPlaced, pos, undefined, undefined, selectionStart, pos, itemsInBox);
+      return;
+    }
+
     // Handle measurement preview
     if (measurementTool.isToolActive() && measurementTool.getFirstPoint() && !measurementTool.getSecondPoint()) {
       render(selection.selectedPlaced, pos);
@@ -273,19 +320,27 @@ export const PlannerCanvas: React.FC<any> = ({
         pos.y, 
         selection.pavingShapeMode
       );
-      cells.forEach((cell: any) => {
-        if (selection.erasePavingMode) {
-          pavingManager.removePaving(cell.x, cell.y);
-        } else if (selection.selectedPaving) {
-          pavingManager.placePaving(cell.x, cell.y, selection.selectedPaving);
-        }
-      });
-      // Only update dragStart for line mode (continuous drawing)
-      // For rectangle and circle, keep the original start point fixed
+      
       if (selection.pavingShapeMode === 'line') {
+        // Line mode: commit immediately as before (continuous drawing)
+        cells.forEach((cell: any) => {
+          if (selection.erasePavingMode) {
+            pavingManager.removePaving(cell.x, cell.y);
+          } else if (selection.selectedPaving) {
+            pavingManager.placePaving(cell.x, cell.y, selection.selectedPaving);
+          }
+        });
         setDragStart(pos);
+        render();
+      } else {
+        // Rectangle/Circle mode: update preview only
+        setPreviewPavingCells(cells);
+        render(selection.selectedPlaced, undefined, undefined, undefined, undefined, undefined, undefined, {
+          cells,
+          paving: selection.selectedPaving,
+          isErase: selection.erasePavingMode
+        });
       }
-      render();
     }
     // Handle buildable drag (non-line tool items)
     else if (isDragging && selection.selectedBuildable && !selection.selectedBuildable.usesLineTool && lastPlacedCell) {
@@ -316,6 +371,11 @@ export const PlannerCanvas: React.FC<any> = ({
       );
       render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid, rotation: selection.previewRotation });
     }
+    
+    // Track hover position for info display
+    if (onHoverChange) {
+      onHoverChange(pos);
+    }
   };
 
   const handleMouseUp = () => {
@@ -323,6 +383,45 @@ export const PlannerCanvas: React.FC<any> = ({
     if (isPanning) {
       setIsPanning(false);
       setPanStart(null);
+    }
+    
+    // Complete selection box
+    if (isSelecting && selectionStart && selectionEnd) {
+      console.log('Completing selection from', selectionStart, 'to', selectionEnd);
+      
+      const selectedItems = gridManager.getItemsInBounds(
+        selectionStart.x,
+        selectionStart.y,
+        selectionEnd.x,
+        selectionEnd.y
+      );
+      console.log('Found items in bounds:', selectedItems.length);
+      
+      setIsSelecting(false);
+      setSelectionStart(null);
+      setSelectionEnd(null);
+      setJustCompletedSelection(true);
+      
+      if (selectedItems.length > 0) {
+        selection.selectMultiplePlaced(selectedItems);
+      }
+      
+      // Always render to clear the selection box visual
+      render();
+      return;
+    }
+    
+    // Commit preview paving if any (for rectangle/circle modes)
+    if (previewPavingCells.length > 0) {
+      previewPavingCells.forEach((cell) => {
+        if (selection.erasePavingMode) {
+          pavingManager.removePaving(cell.x, cell.y);
+        } else if (selection.selectedPaving) {
+          pavingManager.placePaving(cell.x, cell.y, selection.selectedPaving);
+        }
+      });
+      setPreviewPavingCells([]);
+      render();
     }
     
     // Save state after dragging/placing if state changed
@@ -336,6 +435,12 @@ export const PlannerCanvas: React.FC<any> = ({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    // Prevent click from clearing selection if we just completed a selection box
+    if (justCompletedSelection) {
+      setJustCompletedSelection(false);
+      return;
+    }
+    
     const pos = getGridPos(e);
     if (!pos || pos.x === undefined) return;
 
@@ -502,6 +607,7 @@ export const PlannerCanvas: React.FC<any> = ({
         render(clickedItem);
       } else {
         selection.selectPlaced(null);
+        selection.selectMultiplePlaced([]);
         render();
       }
     } else {
@@ -570,6 +676,13 @@ export const PlannerCanvas: React.FC<any> = ({
     render();
   };
 
+  const handleMouseLeave = () => {
+    handleMouseUp();
+    if (onHoverChange) {
+      onHoverChange(null);
+    }
+  };
+
   const handleContainerWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     // Prevent scrolling the page when over the canvas container
     if (e.target !== e.currentTarget && (e.target as HTMLElement).tagName === 'CANVAS') {
@@ -584,7 +697,7 @@ export const PlannerCanvas: React.FC<any> = ({
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
         onClick={handleClick}
         onWheel={handleWheel}
         onContextMenu={(e) => e.preventDefault()}
@@ -594,12 +707,23 @@ export const PlannerCanvas: React.FC<any> = ({
   );
 };
 
-export const InfoPanel: React.FC<any> = ({ selection, gridManager, measurementTool, render, onStateChange }) => {
+export const InfoPanel: React.FC<any> = ({ selection, gridManager, pavingManager, measurementTool, render, onStateChange, hoverPosition }) => {
   const handleDelete = () => {
     if (selection.selectedPlaced) {
       if (onStateChange) onStateChange();
       gridManager.removeItem(selection.selectedPlaced);
       selection.selectPlaced(null);
+      render();
+    }
+  };
+
+  const handleDeleteMultiple = () => {
+    if (selection.selectedPlacedItems && selection.selectedPlacedItems.length > 0) {
+      if (onStateChange) onStateChange();
+      selection.selectedPlacedItems.forEach((item: any) => {
+        gridManager.removeItem(item);
+      });
+      selection.selectMultiplePlaced([]);
       render();
     }
   };
@@ -611,21 +735,57 @@ export const InfoPanel: React.FC<any> = ({ selection, gridManager, measurementTo
     }
   };
 
+  // Get hover info
+  const hoverBuildable = hoverPosition ? gridManager.getItemAt(hoverPosition.x, hoverPosition.y) : null;
+  const hoverPaving = hoverPosition ? pavingManager.getPavingAt(hoverPosition.x, hoverPosition.y) : null;
+
+  // Determine buildable display
+  let buildableDisplay = 'None';
+  let buildableActions = null;
+  
+  if (measurementTool.isToolActive()) {
+    buildableDisplay = 'Measuring...';
+  } else if (selection.selectedPlacedItems && selection.selectedPlacedItems.length > 0) {
+    buildableDisplay = `${selection.selectedPlacedItems.length} items`;
+    buildableActions = (
+      <button onClick={handleDeleteMultiple}>Delete Selected ({selection.selectedPlacedItems.length})</button>
+    );
+  } else if (selection.selectedPlaced) {
+    buildableDisplay = selection.selectedPlaced.name;
+    buildableActions = (
+      <>
+        <button onClick={handleDelete}>Delete</button>
+        <button onClick={handleRotate}>Rotate</button>
+      </>
+    );
+  } else if (selection.selectedBuildable) {
+    buildableDisplay = `${selection.selectedBuildable.name} (placing)`;
+  } else if (hoverBuildable && !selection.selectedPaving && !selection.erasePavingMode) {
+    buildableDisplay = `${hoverBuildable.name} (hover)`;
+  }
+
+  // Determine paving display
+  let pavingDisplay = 'None';
+  
+  if (selection.erasePavingMode) {
+    pavingDisplay = 'Erase Mode';
+  } else if (selection.selectedPaving) {
+    pavingDisplay = `${selection.selectedPaving.name} (placing)`;
+  } else if (hoverPaving && !selection.selectedBuildable) {
+    pavingDisplay = `${hoverPaving.name} (hover)`;
+  }
+
   return (
     <div className="info-panel">
-      <div>
-        <strong>Selected:</strong>{' '}
-        {selection.selectedPlaced?.name || 
-         selection.selectedBuildable?.name ||
-         selection.selectedPaving?.name ||
-         (measurementTool.isToolActive() ? 'Measuring...' : 'None')}
+      <div className="info-section">
+        <strong>Buildable:</strong>{' '}
+        <span>{buildableDisplay}</span>
+        {buildableActions && <div className="info-actions">{buildableActions}</div>}
       </div>
-      {selection.selectedPlaced && (
-        <>
-          <button onClick={handleDelete}>Delete</button>
-          <button onClick={handleRotate}>Rotate</button>
-        </>
-      )}
+      <div className="info-section">
+        <strong>Paving:</strong>{' '}
+        <span>{pavingDisplay}</span>
+      </div>
     </div>
   );
 };

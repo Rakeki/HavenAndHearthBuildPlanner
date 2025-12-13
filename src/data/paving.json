@@ -448,5 +448,15 @@
     "name": "Slag",
     "category": "special",
     "image": "images/paving/Slag.png"
+  },
+  {
+    "name": "Water",
+    "category": "nature",
+    "image": "images/paving/water.png"
+  },
+  {
+    "name": "Tilled Soil",
+    "category": "nature",
+    "image": "images/paving/tilled-soil.png"
   }
 ]

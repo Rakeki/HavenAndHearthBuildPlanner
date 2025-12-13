@@ -18,6 +18,7 @@ function App() {
   const [gridSize, setGridSize] = useState(50);
   const [isLoading, setIsLoading] = useState(true);
   const [showBuildables, setShowBuildables] = useState(true);
+  const [hoverPosition, setHoverPosition] = useState<{x: number, y: number} | null>(null);
 
   const {
     canvasRef,
@@ -64,12 +65,13 @@ function App() {
 
   // Re-render when selection changes
   useEffect(() => {
+    console.log('Selection changed - selectedPlacedItems:', selection.selectedPlacedItems?.length || 0);
     // Deactivate measurement tool when selecting buildable or paving
     if ((selection.selectedBuildable || selection.selectedPaving || selection.erasePavingMode) && measurementTool.isToolActive()) {
       measurementTool.deactivate();
     }
-    render(selection.selectedPlaced);
-  }, [selection.selectedPlaced, selection.selectedBuildable, selection.selectedPaving, selection.erasePavingMode, selection.previewRotation, measurementTool, render]);
+    render(selection.selectedPlaced, undefined, undefined, undefined, undefined, undefined, selection.selectedPlacedItems);
+  }, [selection.selectedPlaced, selection.selectedPlacedItems, selection.selectedBuildable, selection.selectedPaving, selection.erasePavingMode, selection.previewRotation, measurementTool, render]);
 
   // Initial render after renderer is ready and loading is complete
   useEffect(() => {
@@ -90,11 +92,18 @@ function App() {
           render();
         }
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
-        // Delete selected item
+        // Delete selected item(s)
         if (selection.selectedPlaced) {
           saveCurrentState();
           gridManager.removeItem(selection.selectedPlaced);
           selection.selectPlaced(null);
+          render();
+        } else if (selection.selectedPlacedItems && selection.selectedPlacedItems.length > 0) {
+          saveCurrentState();
+          selection.selectedPlacedItems.forEach((item: PlacedItem) => {
+            gridManager.removeItem(item);
+          });
+          selection.selectMultiplePlaced([]);
           render();
         }
       } else if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
@@ -242,14 +251,17 @@ function App() {
             onStateChange={saveCurrentState}
             handleZoom={handleZoom}
             dataService={dataService}
+            onHoverChange={setHoverPosition}
           />
           
           <InfoPanel
             selection={selection}
             gridManager={gridManager}
+            pavingManager={pavingManager}
             measurementTool={measurementTool}
             render={render}
             onStateChange={saveCurrentState}
+            hoverPosition={hoverPosition}
           />
         </main>
         

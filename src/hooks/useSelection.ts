@@ -7,6 +7,7 @@ import { LineTool } from '@models/LineTool';
 export function useSelection() {
   const [selectedBuildable, setSelectedBuildable] = useState<BuildableItem | null>(null);
   const [selectedPlaced, setSelectedPlaced] = useState<PlacedItem | null>(null);
+  const [selectedPlacedItems, setSelectedPlacedItems] = useState<PlacedItem[]>([]);
   const [selectedPaving, setSelectedPaving] = useState<PavingType | null>(null);
   const [erasePavingMode, setErasePavingMode] = useState(false);
   const [pavingShapeMode, setPavingShapeMode] = useState<ShapeMode>('line');
@@ -37,7 +38,29 @@ export function useSelection() {
       setSelectedPaving(null);
       setErasePavingMode(false);
       lineTool.reset();
+      // Clear multi-select when single selecting
+      setSelectedPlacedItems([]);
     }
+  };
+
+  const selectMultiplePlaced = (items: PlacedItem[]) => {
+    console.log('selectMultiplePlaced called with', items.length, 'items');
+    setSelectedPlacedItems(items);
+    setSelectedPlaced(null);
+    setSelectedBuildable(null);
+    setSelectedPaving(null);
+    setErasePavingMode(false);
+    lineTool.reset();
+  };
+
+  const addToSelection = (item: PlacedItem) => {
+    if (!selectedPlacedItems.includes(item)) {
+      setSelectedPlacedItems([...selectedPlacedItems, item]);
+    }
+  };
+
+  const removeFromSelection = (item: PlacedItem) => {
+    setSelectedPlacedItems(selectedPlacedItems.filter(i => i !== item));
   };
 
   const selectPaving = (paving: PavingType | null) => {
@@ -64,6 +87,7 @@ export function useSelection() {
   const clearAll = () => {
     setSelectedBuildable(null);
     setSelectedPlaced(null);
+    setSelectedPlacedItems([]);
     setSelectedPaving(null);
     setErasePavingMode(false);
     setPreviewRotation(0);
@@ -81,6 +105,7 @@ export function useSelection() {
   return {
     selectedBuildable,
     selectedPlaced,
+    selectedPlacedItems,
     selectedPaving,
     erasePavingMode,
     pavingShapeMode,
@@ -88,6 +113,9 @@ export function useSelection() {
     previewRotation,
     selectBuildable,
     selectPlaced,
+    selectMultiplePlaced,
+    addToSelection,
+    removeFromSelection,
     selectPaving,
     toggleEraseMode,
     clearAll,

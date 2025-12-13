@@ -193,12 +193,14 @@ export class CanvasRenderer {
   /**
    * Draw all placed items
    */
-  public drawItems(items: PlacedItem[], selectedItem: PlacedItem | null): void {
+  public drawItems(items: PlacedItem[], selectedItem: PlacedItem | null, selectedItems?: PlacedItem[]): void {
     items.forEach(item => {
       const x = item.x * this.cellSize;
       const y = item.y * this.cellSize;
       const width = item.width * this.cellSize;
       const height = item.height * this.cellSize;
+
+      const isMultiSelected = selectedItems?.includes(item) || false;
 
       // For line tool items (fences/walls), draw with texture if available
       if (item.usesLineTool) {
@@ -248,8 +250,8 @@ export class CanvasRenderer {
           this.ctx.fillRect(x, y, width, height);
         }
         
-        // Only draw border if selected
-        if (selectedItem === item) {
+        // Draw border if selected (single or multi)
+        if (selectedItem === item || isMultiSelected) {
           this.ctx.strokeStyle = '#FFD700';
           this.ctx.lineWidth = 3;
           this.ctx.strokeRect(x, y, width, height);
@@ -266,8 +268,8 @@ export class CanvasRenderer {
           this.ctx.fillRect(x, y, width, height);
         }
 
-        // Draw border (only if selected, and skip for gates/gridImage items)
-        if (selectedItem === item) {
+        // Draw border (if selected, or normal border for non-gates)
+        if (selectedItem === item || isMultiSelected) {
           this.ctx.strokeStyle = '#FFD700';
           this.ctx.lineWidth = 3;
           this.ctx.strokeRect(x, y, width, height);
@@ -633,6 +635,90 @@ export class CanvasRenderer {
       this.ctx.fillStyle = '#ffffff';
       this.ctx.fillText(infoText, centerX, infoY - 5);
     }
+  }
+
+  /**
+   * Draw preview paving cells (before committing on mouse release)
+   */
+  public drawPreviewPaving(cells: Array<{x: number, y: number}>, paving: any, isErase: boolean = false): void {
+    cells.forEach(cell => {
+      const pixelX = cell.x * this.cellSize;
+      const pixelY = cell.y * this.cellSize;
+
+      if (isErase) {
+        // Show erase preview with red overlay
+        this.ctx.fillStyle = 'rgba(255, 0, 0, 0.4)';
+        this.ctx.fillRect(pixelX, pixelY, this.cellSize, this.cellSize);
+        
+        // Draw X pattern
+        this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(pixelX + 2, pixelY + 2);
+        this.ctx.lineTo(pixelX + this.cellSize - 2, pixelY + this.cellSize - 2);
+        this.ctx.moveTo(pixelX + this.cellSize - 2, pixelY + 2);
+        this.ctx.lineTo(pixelX + 2, pixelY + this.cellSize - 2);
+        this.ctx.stroke();
+      } else if (paving) {
+        // Draw preview with semi-transparent overlay
+        const imageElement = paving.getImageElement?.();
+        
+        if (imageElement?.complete && imageElement.naturalWidth > 0) {
+          try {
+            this.ctx.globalAlpha = 0.6;
+            this.ctx.drawImage(
+              imageElement,
+              pixelX,
+              pixelY,
+              this.cellSize,
+              this.cellSize
+            );
+            this.ctx.globalAlpha = 1.0;
+          } catch (e) {
+            // Fallback to color preview
+            this.ctx.fillStyle = 'rgba(100, 150, 255, 0.4)';
+            this.ctx.fillRect(pixelX, pixelY, this.cellSize, this.cellSize);
+          }
+        } else {
+          // Fallback to color preview
+          this.ctx.fillStyle = 'rgba(100, 150, 255, 0.4)';
+          this.ctx.fillRect(pixelX, pixelY, this.cellSize, this.cellSize);
+        }
+        
+        // Draw green border to indicate preview
+        this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.8)';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([4, 4]);
+        this.ctx.strokeRect(pixelX, pixelY, this.cellSize, this.cellSize);
+        this.ctx.setLineDash([]);
+      }
+    });
+  }
+
+  /**
+   * Draw selection box for multi-select
+   */
+  public drawSelectionBox(start: Point, end: Point): void {
+    const minX = Math.min(start.x, end.x);
+    const maxX = Math.max(start.x, end.x);
+    const minY = Math.min(start.y, end.y);
+    const maxY = Math.max(start.y, end.y);
+
+    const pixelX = minX * this.cellSize;
+    const pixelY = minY * this.cellSize;
+    const pixelWidth = (maxX - minX + 1) * this.cellSize;
+    const pixelHeight = (maxY - minY + 1) * this.cellSize;
+
+    // Draw semi-transparent fill
+    this.ctx.fillStyle = 'rgba(0, 150, 255, 0.2)';
+    this.ctx.fillRect(pixelX, pixelY, pixelWidth, pixelHeight);
+
+    // Draw dashed border
+    this.ctx.strokeStyle = '#0096FF';
+    this.ctx.lineWidth = 2;
+    this.ctx.setLineDash([5, 5]);
+    this.ctx.strokeRect(pixelX, pixelY, pixelWidth, pixelHeight);
+    this.ctx.setLineDash([]);
   }
 
   /**

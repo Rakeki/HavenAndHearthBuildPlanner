@@ -180,6 +180,26 @@ export class GridManager {
   }
 
   /**
+   * Get all items within the specified bounds (for multi-select)
+   */
+  public getItemsInBounds(x1: number, y1: number, x2: number, y2: number): PlacedItem[] {
+    const minX = Math.min(x1, x2);
+    const maxX = Math.max(x1, x2);
+    const minY = Math.min(y1, y2);
+    const maxY = Math.max(y1, y2);
+
+    return this.items.filter(item => {
+      // Check if item's bounding box intersects with selection box
+      const itemMinX = item.x;
+      const itemMaxX = item.x + item.width - 1;
+      const itemMinY = item.y;
+      const itemMaxY = item.y + item.height - 1;
+
+      return !(itemMaxX < minX || itemMinX > maxX || itemMaxY < minY || itemMinY > maxY);
+    });
+  }
+
+  /**
    * Clear all items
    */
   public clear(): void {

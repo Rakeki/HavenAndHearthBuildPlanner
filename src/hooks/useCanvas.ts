@@ -115,19 +115,33 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
       selectedItem: PlacedItem | null = null, 
       previewPoint?: Point, 
       previewBuildable?: { buildable: any, isValid: boolean, rotation?: number },
-      lineTool?: any
+      lineTool?: any,
+      selectionBoxStart?: Point,
+      selectionBoxEnd?: Point,
+      selectedItems?: PlacedItem[],
+      previewPaving?: { cells: Array<{x: number, y: number}>, paving: any, isErase: boolean }
     ) => {
       if (!renderer) return;
 
       renderer.clear();
       renderer.drawGrid(pavingManager);
       if (showBuildables) {
-        renderer.drawItems(gridManager.getItems(), selectedItem);
+        renderer.drawItems(gridManager.getItems(), selectedItem, selectedItems);
       }
 
       // Draw measurement if active
       if (measurementTool.isToolActive()) {
         renderer.drawMeasurement(measurementTool, previewPoint);
+      }
+
+      // Draw selection box if dragging
+      if (selectionBoxStart && selectionBoxEnd) {
+        renderer.drawSelectionBox(selectionBoxStart, selectionBoxEnd);
+      }
+
+      // Draw preview paving if available
+      if (previewPaving && previewPaving.cells.length > 0) {
+        renderer.drawPreviewPaving(previewPaving.cells, previewPaving.paving, previewPaving.isErase);
       }
 
       // Draw line tool preview if active

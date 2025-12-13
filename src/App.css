@@ -265,11 +265,39 @@ input[type="number"] {
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: 2rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     border: 1px solid #333;
     min-height: 56px;
     flex-shrink: 0;
+}
+
+.info-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-section strong {
+    color: #dc2626;
+    font-size: 0.9rem;
+}
+
+.info-section span {
+    color: #e0e0e0;
+}
+
+.info-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.info-actions button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
 }
 
 #selectedInfo {

@@ -56,6 +56,17 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
+    const container = canvas.parentElement;
+    const scrollX = container?.scrollLeft || 0;
+    const scrollY = container?.scrollTop || 0;
+    const containerCenterX = (container?.clientWidth || 0) / 2;
+    const containerCenterY = (container?.clientHeight || 0) / 2;
+    
+    // Calculate the grid position at the center before zoom
+    const oldCellSize = renderer.getCellSize();
+    const gridCenterX = (scrollX + containerCenterX) / oldCellSize;
+    const gridCenterY = (scrollY + containerCenterY) / oldCellSize;
+    
     const baseCellSize = 32;
     const cellSize = baseCellSize * zoomLevel;
     canvas.width = gridSize * cellSize;
@@ -69,6 +80,14 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     renderer.drawGrid(pavingManager);
     if (showBuildables) {
       renderer.drawItems(gridManager.getItems(), null);
+    }
+    
+    // Restore scroll position to keep the same grid position centered
+    if (container) {
+      const newScrollX = gridCenterX * cellSize - containerCenterX;
+      const newScrollY = gridCenterY * cellSize - containerCenterY;
+      container.scrollLeft = newScrollX;
+      container.scrollTop = newScrollY;
     }
   }, [gridSize, zoomLevel]);
 

@@ -266,10 +266,14 @@ export class CanvasRenderer {
           this.ctx.fillRect(x, y, width, height);
         }
 
-        // Draw border (only if selected for gates)
-        if (selectedItem === item || !isGate) {
-          this.ctx.strokeStyle = selectedItem === item ? '#FFD700' : '#000';
-          this.ctx.lineWidth = selectedItem === item ? 3 : 2;
+        // Draw border (only if selected, and skip for gates/gridImage items)
+        if (selectedItem === item) {
+          this.ctx.strokeStyle = '#FFD700';
+          this.ctx.lineWidth = 3;
+          this.ctx.strokeRect(x, y, width, height);
+        } else if (!isGate && !hasGridImage) {
+          this.ctx.strokeStyle = '#000';
+          this.ctx.lineWidth = 2;
           this.ctx.strokeRect(x, y, width, height);
         }
 

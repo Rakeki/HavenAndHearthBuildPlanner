@@ -1641,11 +1641,12 @@
   {
     "name": "Timber House",
     "category": "housing",
-    "width": 6,
-    "height": 6,
+    "width": 7,
+    "height": 7,
     "color": "#A0522D",
     "image": "images/320px-Timber_House.png",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/2/2f/Timber_House.png/320px-Timber_House.png"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/2/2f/Timber_House.png/320px-Timber_House.png",
+    "gridImage": "images/texture/timber-house.png"
   },
   {
     "name": "Torchpost",

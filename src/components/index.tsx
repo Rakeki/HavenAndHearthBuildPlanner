@@ -94,6 +94,8 @@ export const PlannerCanvas: React.FC<any> = ({
   const [dragStart, setDragStart] = React.useState<any>(null);
   const [lastPlacedCell, setLastPlacedCell] = React.useState<any>(null);
   const [stateChanged, setStateChanged] = React.useState(false);
+  const [isPanning, setIsPanning] = React.useState(false);
+  const [panStart, setPanStart] = React.useState<{x: number, y: number} | null>(null);
 
   const getGridPos = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -103,6 +105,14 @@ export const PlannerCanvas: React.FC<any> = ({
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    // Handle middle mouse button for panning
+    if (e.button === 1) {
+      e.preventDefault();
+      setIsPanning(true);
+      setPanStart({ x: e.clientX, y: e.clientY });
+      return;
+    }
+
     const pos = getGridPos(e);
     if (!pos) return;
 
@@ -199,6 +209,19 @@ export const PlannerCanvas: React.FC<any> = ({
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    // Handle middle mouse button panning
+    if (isPanning && panStart) {
+      const container = canvasRef.current?.parentElement;
+      if (container) {
+        const dx = panStart.x - e.clientX;
+        const dy = panStart.y - e.clientY;
+        container.scrollLeft += dx;
+        container.scrollTop += dy;
+        setPanStart({ x: e.clientX, y: e.clientY });
+      }
+      return;
+    }
+
     const pos = getGridPos(e);
     if (!pos) return;
 
@@ -296,6 +319,12 @@ export const PlannerCanvas: React.FC<any> = ({
   };
 
   const handleMouseUp = () => {
+    // End panning
+    if (isPanning) {
+      setIsPanning(false);
+      setPanStart(null);
+    }
+    
     // Save state after dragging/placing if state changed
     if (stateChanged && onStateChange) {
       onStateChange();
@@ -483,6 +512,7 @@ export const PlannerCanvas: React.FC<any> = ({
 
   // Get cursor style
   const getCursorStyle = () => {
+    if (isPanning) return 'grabbing';
     if (measurementTool.isToolActive()) return 'crosshair';
     if (selection.selectedBuildable || selection.selectedPaving) return 'crosshair';
     return 'default';
@@ -533,14 +563,22 @@ export const PlannerCanvas: React.FC<any> = ({
 
   const handleWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     // Zoom in when scrolling up (negative deltaY), out when scrolling down
     const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1;
     handleZoom(zoomDelta);
     render();
   };
 
+  const handleContainerWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    // Prevent scrolling the page when over the canvas container
+    if (e.target !== e.currentTarget && (e.target as HTMLElement).tagName === 'CANVAS') {
+      e.preventDefault();
+    }
+  };
+
   return (
-    <div className="canvas-container">
+    <div className="canvas-container" onWheel={handleContainerWheel}>
       <canvas 
         ref={canvasRef}
         onMouseDown={handleMouseDown}
@@ -549,6 +587,7 @@ export const PlannerCanvas: React.FC<any> = ({
         onMouseLeave={handleMouseUp}
         onClick={handleClick}
         onWheel={handleWheel}
+        onContextMenu={(e) => e.preventDefault()}
         style={{ cursor: getCursorStyle() }}
       />
     </div>

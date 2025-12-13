@@ -36,6 +36,11 @@ export function useUndoRedo() {
         color: item.color,
         image: item.image,
         imageUrl: item.imageUrl,
+        gridImage: item.gridImage,
+        usesLineTool: item.usesLineTool,
+        requiresPalisadeOverlap: item.requiresPalisadeOverlap,
+        orientation: item.orientation,
+        rotation: item.rotation,
       }, item.getImageElement()));
       
       const clonedPaving = JSON.parse(JSON.stringify(paving));

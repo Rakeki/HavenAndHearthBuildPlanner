@@ -112,8 +112,8 @@ export class PlacedItem {
   public readonly gridImage?: string;
   public readonly usesLineTool: boolean;
   public readonly requiresPalisadeOverlap: boolean;
-  public readonly orientation?: 'horizontal' | 'vertical' | 'corner';
-  public readonly rotation: number; // 0, 90, 180, or 270 degrees
+  public orientation?: 'horizontal' | 'vertical' | 'corner';
+  public rotation: number; // 0, 90, 180, or 270 degrees
   private imageElement?: HTMLImageElement;
 
   constructor(data: PlacedItemData, imageElement?: HTMLImageElement) {
@@ -237,6 +237,8 @@ export class PlacedItem {
       image: this.image,
       imageUrl: this.imageUrl,
       gridImage: this.gridImage,
+      usesLineTool: this.usesLineTool,
+      requiresPalisadeOverlap: this.requiresPalisadeOverlap,
       orientation: this.orientation,
       rotation: this.rotation,
     };

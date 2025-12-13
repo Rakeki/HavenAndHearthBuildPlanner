@@ -1112,7 +1112,8 @@
     "height": 1,
     "color": "#808080",
     "image": "images/Personal_Claim.png",
-    "imageUrl": "https://ringofbrodgar.com/images/1/17/Personal_Claim.png"
+    "imageUrl": "https://ringofbrodgar.com/images/1/17/Personal_Claim.png",
+    "gridImage": "images/texture/personal-claim.png"
   },
   {
     "name": "Postbox",

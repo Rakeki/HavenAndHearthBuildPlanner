@@ -256,10 +256,11 @@ export class CanvasRenderer {
         }
       } else {
         // Regular items - draw with icons/images and borders
-        // Don't draw background for gates (they should be transparent over palisades)
+        // Don't draw background for gates or items with gridImage (they should be transparent)
         const isGate = item.name.includes('Gate');
+        const hasGridImage = !!item.gridImage;
         
-        if (!isGate) {
+        if (!isGate && !hasGridImage) {
           // Draw background color
           this.ctx.fillStyle = item.color;
           this.ctx.fillRect(x, y, width, height);
@@ -289,13 +290,19 @@ export class CanvasRenderer {
             // Rotate by the specified angle
             this.ctx.rotate((rotation * Math.PI) / 180);
             
-            // Draw image centered
+            // Swap dimensions back for drawing since we want to draw the image
+            // in its original orientation, then let rotation transform it
+            const shouldSwap = rotation === 90 || rotation === 270;
+            const drawWidth = shouldSwap ? height : width;
+            const drawHeight = shouldSwap ? width : height;
+            
+            // Draw image centered in original orientation
             this.ctx.drawImage(
               img,
-              -width / 2 + padding,
-              -height / 2 + padding,
-              width - padding * 2,
-              height - padding * 2
+              -drawWidth / 2 + padding,
+              -drawHeight / 2 + padding,
+              drawWidth - padding * 2,
+              drawHeight - padding * 2
             );
             
             // Restore context state
@@ -339,10 +346,12 @@ export class CanvasRenderer {
     const pixelWidth = width * this.cellSize;
     const pixelHeight = height * this.cellSize;
 
-    // Don't draw background for gates
+    // Don't draw background for gates or items with images (check if imageElement is from gridImage)
     const isGate = name?.includes('Gate');
+    // If there's an image, skip background (assumes items with gridImage don't need background)
+    const hasImage = imageElement?.complete;
     
-    if (!isGate) {
+    if (!isGate && !hasImage) {
       this.ctx.globalAlpha = 0.7;
       this.ctx.fillStyle = isValid ? color : '#ff0000';
       this.ctx.fillRect(pixelX, pixelY, pixelWidth, pixelHeight);
@@ -370,13 +379,19 @@ export class CanvasRenderer {
         // Rotate by the specified angle
         this.ctx.rotate((rot * Math.PI) / 180);
         
-        // Draw image centered
+        // Swap dimensions back for drawing since we want to draw the image
+        // in its original orientation, then let rotation transform it
+        const shouldSwap = rot === 90 || rot === 270;
+        const drawWidth = shouldSwap ? pixelHeight : pixelWidth;
+        const drawHeight = shouldSwap ? pixelWidth : pixelHeight;
+        
+        // Draw image centered in original orientation
         this.ctx.drawImage(
           imageElement,
-          -pixelWidth / 2 + padding,
-          -pixelHeight / 2 + padding,
-          pixelWidth - padding * 2,
-          pixelHeight - padding * 2
+          -drawWidth / 2 + padding,
+          -drawHeight / 2 + padding,
+          drawWidth - padding * 2,
+          drawHeight - padding * 2
         );
         
         // Restore context state

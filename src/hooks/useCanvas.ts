@@ -22,7 +22,7 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     }
   });
 
-  // Initialize canvas and renderer when canvas is ready
+  // Initialize canvas and renderer when canvas is ready (only once)
   useEffect(() => {
     if (!canvasReady) return;
     
@@ -33,11 +33,10 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     if (!ctx) return;
 
     const baseCellSize = 32;
-    const cellSize = baseCellSize * zoomLevel;
-    canvas.width = gridSize * cellSize;
-    canvas.height = gridSize * cellSize;
+    canvas.width = gridSize * baseCellSize;
+    canvas.height = gridSize * baseCellSize;
 
-    const newRenderer = new CanvasRenderer(ctx, cellSize);
+    const newRenderer = new CanvasRenderer(ctx, baseCellSize);
     newRenderer.setGridSize(gridSize);
     setRenderer(newRenderer);
     
@@ -47,9 +46,9 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     if (showBuildables) {
       newRenderer.drawItems(gridManager.getItems(), null);
     }
-  }, [canvasReady, gridSize, pavingManager, gridManager, showBuildables, zoomLevel]);
+  }, [canvasReady]);
 
-  // Update grid size or zoom when they change
+  // Update zoom when it changes
   useEffect(() => {
     if (!renderer) return;
     
@@ -72,8 +71,6 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     canvas.width = gridSize * cellSize;
     canvas.height = gridSize * cellSize;
     
-    gridManager.setGridSize(gridSize);
-    renderer.setGridSize(gridSize);
     renderer.setCellSize(cellSize);
     
     renderer.clear();
@@ -89,7 +86,29 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
       container.scrollLeft = newScrollX;
       container.scrollTop = newScrollY;
     }
-  }, [gridSize, zoomLevel]);
+  }, [zoomLevel, renderer, pavingManager, gridManager, showBuildables, gridSize]);
+
+  // Update grid size when it changes
+  useEffect(() => {
+    if (!renderer) return;
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const baseCellSize = 32;
+    const cellSize = baseCellSize * zoomLevel;
+    canvas.width = gridSize * cellSize;
+    canvas.height = gridSize * cellSize;
+    
+    gridManager.setGridSize(gridSize);
+    renderer.setGridSize(gridSize);
+    
+    renderer.clear();
+    renderer.drawGrid(pavingManager);
+    if (showBuildables) {
+      renderer.drawItems(gridManager.getItems(), null);
+    }
+  }, [gridSize]);
 
   const render = useCallback(
     (

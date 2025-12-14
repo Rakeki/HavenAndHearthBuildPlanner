@@ -102,6 +102,9 @@ export const PlannerCanvas: React.FC<any> = ({
   const [selectionEnd, setSelectionEnd] = React.useState<{x: number, y: number} | null>(null);
   const [justCompletedSelection, setJustCompletedSelection] = React.useState(false);
   const [previewPavingCells, setPreviewPavingCells] = React.useState<Array<{x: number, y: number}>>([]);
+  const [isDraggingPlaced, setIsDraggingPlaced] = React.useState(false);
+  const [draggedItemOriginalPos, setDraggedItemOriginalPos] = React.useState<{x: number, y: number} | null>(null);
+  const [dragOffset, setDragOffset] = React.useState<{x: number, y: number}>({x: 0, y: 0});
 
   const getGridPos = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -124,6 +127,18 @@ export const PlannerCanvas: React.FC<any> = ({
 
     // Don't handle placement when measuring
     if (measurementTool.isToolActive()) return;
+
+    // Check if clicking on a selected placed item to start dragging it
+    if (selection.selectedPlaced && e.button === 0) {
+      const clickedItem = gridManager.getItemAt(pos.x, pos.y);
+      if (clickedItem === selection.selectedPlaced) {
+        setIsDraggingPlaced(true);
+        setDraggedItemOriginalPos({ x: clickedItem.x, y: clickedItem.y });
+        setDragOffset({ x: pos.x - clickedItem.x, y: pos.y - clickedItem.y });
+        setStateChanged(true);
+        return;
+      }
+    }
 
     // Start selection box if nothing is selected and left click without modifiers on empty space
     if (!selection.selectedBuildable && !selection.selectedPaving && !selection.erasePavingMode && 
@@ -242,6 +257,9 @@ export const PlannerCanvas: React.FC<any> = ({
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    // Store last mouse event for use in mouseup
+    (window as any).lastMouseEvent = e;
+    
     // Handle middle mouse button panning
     if (isPanning && panStart) {
       const container = canvasRef.current?.parentElement;
@@ -354,6 +372,32 @@ export const PlannerCanvas: React.FC<any> = ({
         }
       }
     }
+    // Handle dragging a placed item
+    else if (isDraggingPlaced && selection.selectedPlaced) {
+      const newX = pos.x - dragOffset.x;
+      const newY = pos.y - dragOffset.y;
+      
+      // Temporarily move to show preview
+      const item = selection.selectedPlaced;
+      const oldX = item.x;
+      const oldY = item.y;
+      item.moveTo(newX, newY);
+      
+      const isValid = gridManager.canPlaceItem(
+        newX,
+        newY,
+        item.width,
+        item.height,
+        item,
+        item.requiresPalisadeOverlap
+      );
+      
+      // Render with preview
+      render(item, undefined, undefined, undefined, undefined, undefined, undefined, undefined, { x: newX, y: newY, isValid });
+      
+      // Restore original position (actual move happens on mouse up)
+      item.moveTo(oldX, oldY);
+    }
     // Show preview when just hovering with selected buildable
     else if (selection.selectedBuildable) {
       // Apply rotation to dimensions for placement check
@@ -379,6 +423,35 @@ export const PlannerCanvas: React.FC<any> = ({
   };
 
   const handleMouseUp = () => {
+    // Complete dragging placed item
+    if (isDraggingPlaced && selection.selectedPlaced) {
+      const pos = draggedItemOriginalPos;
+      if (pos) {
+        const canvas = canvasRef.current;
+        if (canvas) {
+          const rect = canvas.getBoundingClientRect();
+          const lastEvent = (window as any).lastMouseEvent;
+          if (lastEvent) {
+            const gridPos = renderer?.mouseToGrid(lastEvent.clientX - rect.left, lastEvent.clientY - rect.top);
+            if (gridPos) {
+              const newX = gridPos.x - dragOffset.x;
+              const newY = gridPos.y - dragOffset.y;
+              
+              if (gridManager.moveItem(selection.selectedPlaced, newX, newY)) {
+                if (onStateChange) onStateChange();
+              } else {
+                // Move failed, revert to original position
+                selection.selectedPlaced.moveTo(pos.x, pos.y);
+              }
+            }
+          }
+        }
+      }
+      setIsDraggingPlaced(false);
+      setDraggedItemOriginalPos(null);
+      render();
+    }
+    
     // End panning
     if (isPanning) {
       setIsPanning(false);
@@ -619,8 +692,10 @@ export const PlannerCanvas: React.FC<any> = ({
   // Get cursor style
   const getCursorStyle = () => {
     if (isPanning) return 'grabbing';
+    if (isDraggingPlaced) return 'grabbing';
     if (measurementTool.isToolActive()) return 'crosshair';
     if (selection.selectedBuildable || selection.selectedPaving) return 'crosshair';
+    if (selection.selectedPlaced) return 'move';
     return 'default';
   };
 
@@ -660,6 +735,13 @@ export const PlannerCanvas: React.FC<any> = ({
         if (selection.selectedBuildable && !selection.selectedBuildable.usesLineTool && !measurementTool.isToolActive()) {
           selection.rotatePreview();
           render();
+        }
+        // Rotate a placed item if one is selected (but not line tool items)
+        else if (selection.selectedPlaced && !selection.selectedPlaced.usesLineTool && !measurementTool.isToolActive()) {
+          if (gridManager.rotateItem(selection.selectedPlaced)) {
+            if (onStateChange) onStateChange();
+            render();
+          }
         }
       }
     };

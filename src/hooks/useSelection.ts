@@ -33,6 +33,7 @@ export function useSelection() {
   const selectPlaced = (item: PlacedItem | null) => {
     setSelectedPlaced(item);
     setSelectedBuildable(null);
+    setPreviewRotation(0); // Reset rotation when selecting placed items
     if (item) {
       // Clear paving selections when selecting a placed item
       setSelectedPaving(null);
@@ -48,6 +49,7 @@ export function useSelection() {
     setSelectedPlacedItems(items);
     setSelectedPlaced(null);
     setSelectedBuildable(null);
+    setPreviewRotation(0); // Reset rotation when selecting placed items
     setSelectedPaving(null);
     setErasePavingMode(false);
     lineTool.reset();
@@ -65,6 +67,7 @@ export function useSelection() {
 
   const selectPaving = (paving: PavingType | null) => {
     setSelectedPaving(paving);
+    setPreviewRotation(0); // Reset rotation when selecting paving
     if (paving) {
       // Clear buildable and placed selections when selecting paving
       setSelectedBuildable(null);
@@ -73,12 +76,12 @@ export function useSelection() {
       lineTool.reset();
     }
   };
-
   const toggleEraseMode = () => {
     setErasePavingMode(!erasePavingMode);
     if (!erasePavingMode) {
       setSelectedPaving(null);
       setSelectedBuildable(null);
+      setPreviewRotation(0); // Reset rotation when entering erase mode
       setSelectedPlaced(null);
       lineTool.reset();
     }

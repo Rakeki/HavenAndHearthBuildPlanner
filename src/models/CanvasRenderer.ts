@@ -193,14 +193,21 @@ export class CanvasRenderer {
   /**
    * Draw all placed items
    */
-  public drawItems(items: PlacedItem[], selectedItem: PlacedItem | null, selectedItems?: PlacedItem[]): void {
+  public drawItems(items: PlacedItem[], selectedItem: PlacedItem | null, selectedItems?: PlacedItem[], dragPreview?: { x: number, y: number, isValid: boolean }): void {
     items.forEach(item => {
-      const x = item.x * this.cellSize;
-      const y = item.y * this.cellSize;
+      // If this is the item being dragged, use preview position
+      const isDragging = selectedItem === item && dragPreview;
+      const x = (isDragging ? dragPreview.x : item.x) * this.cellSize;
+      const y = (isDragging ? dragPreview.y : item.y) * this.cellSize;
       const width = item.width * this.cellSize;
       const height = item.height * this.cellSize;
 
       const isMultiSelected = selectedItems?.includes(item) || false;
+      
+      // Apply transparency and color overlay for invalid drag position
+      if (isDragging) {
+        this.ctx.globalAlpha = 0.7;
+      }
 
       // For line tool items (fences/walls), draw with texture if available
       if (item.usesLineTool) {
@@ -339,6 +346,20 @@ export class CanvasRenderer {
           this.ctx.fillStyle = '#fff';
           this.ctx.fillText(item.name, textX, textY);
         }
+      }
+      
+      // Draw invalid placement indicator if dragging to invalid position
+      if (isDragging && !dragPreview.isValid) {
+        this.ctx.strokeStyle = '#ff0000';
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeRect(x, y, width, height);
+        this.ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+        this.ctx.fillRect(x, y, width, height);
+      }
+      
+      // Reset alpha
+      if (isDragging) {
+        this.ctx.globalAlpha = 1.0;
       }
     });
   }

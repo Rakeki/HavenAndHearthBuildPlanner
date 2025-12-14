@@ -60,7 +60,8 @@
     "height": 1,
     "color": "#8B4513",
     "image": "images/Barrel.png",
-    "imageUrl": "https://ringofbrodgar.com/images/a/a1/Barrel.png"
+    "imageUrl": "https://ringofbrodgar.com/images/a/a1/Barrel.png",
+    "gridImage": "images/texture/barrel.png"
   },
   {
     "name": "Barter Pole",

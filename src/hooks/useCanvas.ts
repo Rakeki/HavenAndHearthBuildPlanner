@@ -119,14 +119,15 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
       selectionBoxStart?: Point,
       selectionBoxEnd?: Point,
       selectedItems?: PlacedItem[],
-      previewPaving?: { cells: Array<{x: number, y: number}>, paving: any, isErase: boolean }
+      previewPaving?: { cells: Array<{x: number, y: number}>, paving: any, isErase: boolean },
+      dragPreview?: { x: number, y: number, isValid: boolean }
     ) => {
       if (!renderer) return;
 
       renderer.clear();
       renderer.drawGrid(pavingManager);
       if (showBuildables) {
-        renderer.drawItems(gridManager.getItems(), selectedItem, selectedItems);
+        renderer.drawItems(gridManager.getItems(), selectedItem, selectedItems, dragPreview);
       }
 
       // Draw measurement if active

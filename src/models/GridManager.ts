@@ -4,26 +4,43 @@ import { PlacedItem } from './BuildableItem';
  * Manages the grid and placed items
  */
 export class GridManager {
-  private gridSize: number;
+  private gridWidth: number;
+  private gridHeight: number;
   private items: PlacedItem[];
 
-  constructor(gridSize: number = 50) {
-    this.gridSize = gridSize;
+  constructor(gridWidth: number = 50, gridHeight: number = 50) {
+    this.gridWidth = gridWidth;
+    this.gridHeight = gridHeight;
     this.items = [];
   }
 
   /**
    * Get the current grid size
    */
-  public getGridSize(): number {
-    return this.gridSize;
+  public getGridSize(): { width: number; height: number } {
+    return { width: this.gridWidth, height: this.gridHeight };
+  }
+
+  /**
+   * Get the grid width
+   */
+  public getGridWidth(): number {
+    return this.gridWidth;
+  }
+
+  /**
+   * Get the grid height
+   */
+  public getGridHeight(): number {
+    return this.gridHeight;
   }
 
   /**
    * Set the grid size
    */
-  public setGridSize(size: number): void {
-    this.gridSize = size;
+  public setGridSize(width: number, height: number): void {
+    this.gridWidth = width;
+    this.gridHeight = height;
   }
 
   /**
@@ -73,7 +90,7 @@ export class GridManager {
     requiresPalisadeOverlap: boolean = false
   ): boolean {
     // Check bounds
-    if (x < 0 || y < 0 || x + width > this.gridSize || y + height > this.gridSize) {
+    if (x < 0 || y < 0 || x + width > this.gridWidth || y + height > this.gridHeight) {
       return false;
     }
 

@@ -51,7 +51,10 @@
     "height": 1,
     "color": "#A0522D",
     "image": "images/220px-Archery_Tower.png",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/a/a6/Archery_Tower.png/220px-Archery_Tower.png"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/a/a6/Archery_Tower.png/220px-Archery_Tower.png",
+    "hasInterior": true,
+    "interiorWidth": 3,
+    "interiorHeight": 3
   },
   {
     "name": "Barrel",
@@ -711,7 +714,10 @@
     "height": 14,
     "color": "#A0522D",
     "image": "images/320px-Great_Hall.png",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c7/Great_Hall.png/320px-Great_Hall.png"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c7/Great_Hall.png/320px-Great_Hall.png",
+    "hasInterior": true,
+    "interiorWidth": 8,
+    "interiorHeight": 12
   },
   {
     "name": "Greenhouse",
@@ -720,7 +726,10 @@
     "height": 4,
     "color": "#A0522D",
     "image": "images/320px-Greenhouse.jpg",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f9/Greenhouse.jpg/320px-Greenhouse.jpg"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f9/Greenhouse.jpg/320px-Greenhouse.jpg",
+    "hasInterior": true,
+    "interiorWidth": 2,
+    "interiorHeight": 3
   },
   {
     "name": "Grotesque Idol",
@@ -792,7 +801,10 @@
     "height": 4,
     "color": "#A0522D",
     "image": "images/Igloo_outside.jpg",
-    "imageUrl": "https://ringofbrodgar.com/images/9/99/Igloo_outside.jpg"
+    "imageUrl": "https://ringofbrodgar.com/images/9/99/Igloo_outside.jpg",
+    "hasInterior": true,
+    "interiorWidth": 3,
+    "interiorHeight": 3
   },
   {
     "name": "Kicksled",
@@ -1511,7 +1523,10 @@
     "height": 7,
     "color": "#A0522D",
     "image": "images/205px-Stone_Tower.png",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c4/Stone_Tower.png/205px-Stone_Tower.png"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c4/Stone_Tower.png/205px-Stone_Tower.png",
+    "hasInterior": true,
+    "interiorWidth": 5,
+    "interiorHeight": 5
   },
   {
     "name": "Stonehut",
@@ -1520,7 +1535,10 @@
     "height": 4,
     "color": "#A0522D",
     "image": "images/320px-Stonehut.png",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/6/6a/Stonehut.png/320px-Stonehut.png"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/6/6a/Stonehut.png/320px-Stonehut.png",
+    "hasInterior": true,
+    "interiorWidth": 3,
+    "interiorHeight": 3
   },
   {
     "name": "Stonekist",

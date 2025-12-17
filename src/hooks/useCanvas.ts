@@ -3,14 +3,16 @@ import { GridManager } from '@models/GridManager';
 import { PavingManager } from '@models/PavingManager';
 import { CanvasRenderer } from '@models/CanvasRenderer';
 import { MeasurementTool } from '@models/MeasurementTool';
+import { InteriorManager } from '@models/InteriorManager';
 import { PlacedItem } from '@models/BuildableItem';
 import { Point } from '@models/types';
 
-export function useCanvas(gridSize: number, showBuildables: boolean = true) {
+export function useCanvas(gridWidth: number, gridHeight: number, showBuildables: boolean = true, activeInteriorId: string | null = null) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [renderer, setRenderer] = useState<CanvasRenderer | null>(null);
-  const [gridManager] = useState(() => new GridManager(gridSize));
+  const [gridManager] = useState(() => new GridManager(gridWidth, gridHeight));
   const [pavingManager] = useState(() => new PavingManager());
+  const [interiorManager] = useState(() => new InteriorManager());
   const [measurementTool] = useState(() => new MeasurementTool());
   const [canvasReady, setCanvasReady] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1); // 1 = 100%, 0.5 = 50%, 2 = 200%
@@ -33,11 +35,13 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     if (!ctx) return;
 
     const baseCellSize = 32;
-    canvas.width = gridSize * baseCellSize;
-    canvas.height = gridSize * baseCellSize;
+    // Add extra height for potential interiors (we'll start with 30 rows of extra space)
+    const extraHeightForInteriors = baseCellSize * 30;
+    canvas.width = gridWidth * baseCellSize;
+    canvas.height = gridHeight * baseCellSize + extraHeightForInteriors;
 
     const newRenderer = new CanvasRenderer(ctx, baseCellSize);
-    newRenderer.setGridSize(gridSize);
+    newRenderer.setGridSize(gridWidth, gridHeight);
     setRenderer(newRenderer);
     
     // Draw immediately
@@ -68,8 +72,8 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     
     const baseCellSize = 32;
     const cellSize = baseCellSize * zoomLevel;
-    canvas.width = gridSize * cellSize;
-    canvas.height = gridSize * cellSize;
+    canvas.width = gridWidth * cellSize;
+    canvas.height = gridHeight * cellSize;
     
     renderer.setCellSize(cellSize);
     
@@ -86,7 +90,7 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
       container.scrollLeft = newScrollX;
       container.scrollTop = newScrollY;
     }
-  }, [zoomLevel, renderer, pavingManager, gridManager, showBuildables, gridSize]);
+  }, [zoomLevel, renderer, pavingManager, gridManager, showBuildables, gridWidth, gridHeight]);
 
   // Update grid size when it changes
   useEffect(() => {
@@ -97,18 +101,19 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     
     const baseCellSize = 32;
     const cellSize = baseCellSize * zoomLevel;
-    canvas.width = gridSize * cellSize;
-    canvas.height = gridSize * cellSize;
+    const extraHeightForInteriors = cellSize * 30;
+    canvas.width = gridWidth * cellSize;
+    canvas.height = gridHeight * cellSize + extraHeightForInteriors;
     
-    gridManager.setGridSize(gridSize);
-    renderer.setGridSize(gridSize);
+    gridManager.setGridSize(gridWidth, gridHeight);
+    renderer.setGridSize(gridWidth, gridHeight);
     
     renderer.clear();
     renderer.drawGrid(pavingManager);
     if (showBuildables) {
       renderer.drawItems(gridManager.getItems(), null);
     }
-  }, [gridSize]);
+  }, [gridWidth, gridHeight]);
 
   const render = useCallback(
     (
@@ -124,14 +129,48 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     ) => {
       if (!renderer) return;
 
-      renderer.clear();
-      renderer.drawGrid(pavingManager);
-      if (showBuildables) {
-        renderer.drawItems(gridManager.getItems(), selectedItem, selectedItems, dragPreview);
+      // Resize canvas based on mode
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const cellSize = renderer.getCellSize();
+        const mainGridHeight = gridHeight * cellSize;
+        const mainGridWidth = gridWidth * cellSize;
+        
+        if (activeInteriorId) {
+          // Interior overlay mode - size canvas to the interior
+          const interior = interiorManager.getInterior(activeInteriorId);
+          if (interior) {
+            const size = interior.getSize();
+            canvas.width = size.width * cellSize;
+            canvas.height = size.height * cellSize;
+          }
+        } else {
+          // Normal mode - ensure canvas is sized for main grid only
+          canvas.width = mainGridWidth;
+          canvas.height = mainGridHeight;
+        }
       }
 
-      // Draw measurement if active
-      if (measurementTool.isToolActive()) {
+      renderer.clear();
+      
+      // Render based on mode
+      if (activeInteriorId) {
+        // Interior overlay mode - draw only the interior
+        const interior = interiorManager.getInterior(activeInteriorId);
+        if (interior) {
+          renderer.drawInteriorOverlay(interior, selectedItem, selectedItems, dragPreview);
+        }
+      } else {
+        // Normal mode - draw main grid
+        renderer.drawGrid(pavingManager);
+        if (showBuildables) {
+          renderer.drawItems(gridManager.getItems(), selectedItem, selectedItems, dragPreview);
+        }
+
+      }
+
+      // Draw measurement if active (only in normal mode)
+      if (!activeInteriorId && measurementTool.isToolActive()) {
         renderer.drawMeasurement(measurementTool, previewPoint);
       }
 
@@ -140,13 +179,13 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
         renderer.drawSelectionBox(selectionBoxStart, selectionBoxEnd);
       }
 
-      // Draw preview paving if available
-      if (previewPaving && previewPaving.cells.length > 0) {
+      // Draw preview paving if available (only in normal mode)
+      if (!activeInteriorId && previewPaving && previewPaving.cells.length > 0) {
         renderer.drawPreviewPaving(previewPaving.cells, previewPaving.paving, previewPaving.isErase);
       }
 
-      // Draw line tool preview if active
-      if (lineTool?.isActive && lineTool.isActive() && previewBuildable?.buildable) {
+      // Draw line tool preview if active (only in normal mode)
+      if (!activeInteriorId && lineTool?.isActive && lineTool.isActive() && previewBuildable?.buildable) {
         renderer.drawLineTool(lineTool, previewBuildable.buildable, gridManager);
       }
       // Draw buildable preview if available (for non-line tools)
@@ -172,7 +211,7 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
         );
       }
     },
-    [renderer, gridManager, pavingManager, measurementTool, showBuildables]
+    [renderer, gridManager, pavingManager, interiorManager, measurementTool, showBuildables, activeInteriorId]
   );
 
   const handleZoom = useCallback((delta: number) => {
@@ -188,6 +227,7 @@ export function useCanvas(gridSize: number, showBuildables: boolean = true) {
     renderer,
     gridManager,
     pavingManager,
+    interiorManager,
     measurementTool,
     render,
     zoomLevel,

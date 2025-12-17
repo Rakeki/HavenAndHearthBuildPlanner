@@ -10,13 +10,15 @@ import { Point, PavingCategory } from './types';
 export class CanvasRenderer {
   private ctx: CanvasRenderingContext2D;
   private cellSize: number;
-  private gridSize: number;
+  private gridWidth: number;
+  private gridHeight: number;
   private cornerImageCache: Map<string, HTMLImageElement> = new Map();
 
   constructor(ctx: CanvasRenderingContext2D, cellSize: number = 30) {
     this.ctx = ctx;
     this.cellSize = cellSize;
-    this.gridSize = 50;
+    this.gridWidth = 50;
+    this.gridHeight = 50;
     this.preloadCornerImages();
   }
 
@@ -34,8 +36,16 @@ export class CanvasRenderer {
   /**
    * Set the grid size
    */
-  public setGridSize(size: number): void {
-    this.gridSize = size;
+  public setGridSize(width: number, height: number): void {
+    this.gridWidth = width;
+    this.gridHeight = height;
+  }
+
+  /**
+   * Get the grid dimensions
+   */
+  public getGridSize(): { width: number; height: number } {
+    return { width: this.gridWidth, height: this.gridHeight };
   }
 
   /**
@@ -56,17 +66,16 @@ export class CanvasRenderer {
    * Clear the canvas
    */
   public clear(): void {
-    const width = this.gridSize * this.cellSize;
-    const height = this.gridSize * this.cellSize;
-    this.ctx.clearRect(0, 0, width, height);
+    // Clear the entire canvas including space for interiors
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
   }
 
   /**
    * Draw the grid background
    */
   public drawGrid(pavingManager: PavingManager): void {
-    const width = this.gridSize * this.cellSize;
-    const height = this.gridSize * this.cellSize;
+    const width = this.gridWidth * this.cellSize;
+    const height = this.gridHeight * this.cellSize;
 
     // Background
     this.ctx.fillStyle = '#f8f9fa';
@@ -529,8 +538,8 @@ export class CanvasRenderer {
     const midY = (y1 + y2) / 2;
 
     // Position box to avoid going off canvas
-    const canvasWidth = this.gridSize * this.cellSize;
-    const canvasHeight = this.gridSize * this.cellSize;
+    const canvasWidth = this.gridWidth * this.cellSize;
+    const canvasHeight = this.gridHeight * this.cellSize;
     let boxX = midX - boxWidth / 2;
     let boxY = midY - boxHeight / 2;
     boxX = Math.max(5, Math.min(boxX, canvasWidth - boxWidth - 5));
@@ -647,7 +656,7 @@ export class CanvasRenderer {
 
       // Draw info text
       const infoText = `${cells.length} tiles - Click to place, click corner to change direction`;
-      const infoY = Math.min(centerY + this.cellSize, this.gridSize * this.cellSize - 20);
+      const infoY = Math.min(centerY + this.cellSize, this.gridHeight * this.cellSize - 20);
       
       this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
       const textWidth = this.ctx.measureText(infoText).width;
@@ -750,5 +759,317 @@ export class CanvasRenderer {
       x: Math.floor(mouseX / this.cellSize),
       y: Math.floor(mouseY / this.cellSize),
     };
+  }
+
+  /**
+   * Draw a single interior as an overlay (full canvas)
+   */
+  public drawInteriorOverlay(interior: any, selectedItem?: PlacedItem | null, selectedItems?: PlacedItem[], dragPreview?: { x: number, y: number, isValid: boolean }): void {
+    const size = interior.getSize();
+    const interiorWidth = size.width * this.cellSize;
+    const interiorHeight = size.height * this.cellSize;
+
+    // Draw interior grid background
+    this.ctx.fillStyle = '#fff8e1'; // Slightly warm background for interiors
+    this.ctx.fillRect(0, 0, interiorWidth, interiorHeight);
+
+    // Draw interior paving
+    const pavingManager = interior.getPavingManager();
+    const allPaving = pavingManager.getAllPaving();
+    allPaving.forEach((paving: any, key: string) => {
+      const [x, y] = key.split(',').map(Number);
+      const pixelX = x * this.cellSize;
+      const pixelY = y * this.cellSize;
+
+      if (paving.imageElement?.complete && paving.imageElement.naturalWidth > 0) {
+        try {
+          this.ctx.drawImage(
+            paving.imageElement,
+            pixelX,
+            pixelY,
+            this.cellSize,
+            this.cellSize
+          );
+        } catch (e) {
+          this.drawPavingFallback(pixelX, pixelY, this.cellSize, paving.name, paving.category);
+        }
+      } else {
+        this.drawPavingFallback(pixelX, pixelY, this.cellSize, paving.name, paving.category);
+      }
+    });
+
+    // Draw interior grid lines
+    this.ctx.strokeStyle = '#d4af37'; // Gold-ish color for interior grids
+    this.ctx.lineWidth = 1;
+
+    for (let x = 0; x <= interiorWidth; x += this.cellSize) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, 0);
+      this.ctx.lineTo(x, interiorHeight);
+      this.ctx.stroke();
+    }
+
+    for (let y = 0; y <= interiorHeight; y += this.cellSize) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, y);
+      this.ctx.lineTo(interiorWidth, y);
+      this.ctx.stroke();
+    }
+
+    // Draw interior items
+    const gridManager = interior.getGridManager();
+    const items = gridManager.getItems();
+    items.forEach((item: PlacedItem) => {
+      const isSelected = selectedItem === item || selectedItems?.includes(item);
+      this.drawInteriorItemInOverlay(item, isSelected);
+    });
+
+    // Draw drag preview if applicable
+    if (dragPreview) {
+      this.drawDragPreviewInOverlay(dragPreview);
+    }
+  }
+
+  /**
+   * Draw an item in interior overlay mode
+   */
+  private drawInteriorItemInOverlay(item: PlacedItem, isSelected: boolean): void {
+    const pixelX = item.x * this.cellSize;
+    const pixelY = item.y * this.cellSize;
+    const pixelWidth = item.width * this.cellSize;
+    const pixelHeight = item.height * this.cellSize;
+
+    const img = item.getImageElement();
+    if (img && img.complete && img.naturalWidth > 0) {
+      try {
+        this.ctx.save();
+        
+        // Apply rotation if needed
+        if (item.rotation && item.rotation !== 0) {
+          const centerX = pixelX + pixelWidth / 2;
+          const centerY = pixelY + pixelHeight / 2;
+          this.ctx.translate(centerX, centerY);
+          this.ctx.rotate((item.rotation * Math.PI) / 180);
+          this.ctx.drawImage(
+            img,
+            -pixelWidth / 2,
+            -pixelHeight / 2,
+            pixelWidth,
+            pixelHeight
+          );
+          this.ctx.restore();
+        } else {
+          this.ctx.drawImage(img, pixelX, pixelY, pixelWidth, pixelHeight);
+        }
+      } catch (e) {
+        this.drawInteriorItemFallback(pixelX, pixelY, pixelWidth, pixelHeight, item.color);
+      }
+    } else {
+      this.drawInteriorItemFallback(pixelX, pixelY, pixelWidth, pixelHeight, item.color);
+    }
+
+    // Highlight if selected
+    if (isSelected) {
+      this.ctx.strokeStyle = '#007bff';
+      this.ctx.lineWidth = 3;
+      this.ctx.strokeRect(pixelX - 2, pixelY - 2, pixelWidth + 4, pixelHeight + 4);
+    }
+  }
+
+  /**
+   * Draw drag preview in interior overlay
+   */
+  private drawDragPreviewInOverlay(dragPreview: { x: number, y: number, isValid: boolean }): void {
+    this.ctx.fillStyle = dragPreview.isValid ? 'rgba(0, 255, 0, 0.3)' : 'rgba(255, 0, 0, 0.3)';
+    this.ctx.fillRect(
+      dragPreview.x * this.cellSize,
+      dragPreview.y * this.cellSize,
+      this.cellSize,
+      this.cellSize
+    );
+  }
+
+  /**
+   * Draw interior grids below the main grid
+   */
+  public drawInteriors(interiors: any[], selectedBuildingId?: string): void {
+    console.log('[CanvasRenderer] drawInteriors called with', interiors.length, 'interiors');
+    if (interiors.length === 0) return;
+
+    const mainGridHeight = this.gridHeight * this.cellSize;
+    const padding = this.cellSize * 2; // Space between main grid and interiors
+    const interiorSpacing = this.cellSize * 3; // Space between interior grids
+    
+    console.log('[CanvasRenderer] mainGridHeight:', mainGridHeight, 'padding:', padding);
+    
+    // Draw a debug indicator to show where interiors should appear
+    this.ctx.fillStyle = '#ff00ff';
+    this.ctx.fillRect(0, mainGridHeight, 50, 50);
+    this.ctx.fillStyle = '#000000';
+    this.ctx.font = '20px Arial';
+    this.ctx.fillText('INTERIORS BELOW', 60, mainGridHeight + 30);
+    
+    let currentX = 0;
+    
+    interiors.forEach((interior, index) => {
+      console.log('[CanvasRenderer] Drawing interior', index, 'id:', interior.id, 'buildingId:', interior.buildingId);
+      const size = interior.getSize();
+      console.log('[CanvasRenderer] Interior size:', size.width, 'x', size.height);
+      const interiorWidth = size.width * this.cellSize;
+      const interiorHeight = size.height * this.cellSize;
+      const offsetY = mainGridHeight + padding;
+      console.log('[CanvasRenderer] Drawing at position:', currentX, offsetY, 'size:', interiorWidth, 'x', interiorHeight);
+
+      // Draw interior grid background
+      this.ctx.fillStyle = '#fff8e1'; // Slightly warm background for interiors
+      this.ctx.fillRect(currentX, offsetY, interiorWidth, interiorHeight);
+
+      // Draw interior paving
+      const pavingManager = interior.getPavingManager();
+      const allPaving = pavingManager.getAllPaving();
+      allPaving.forEach((paving: any, key: string) => {
+        const [x, y] = key.split(',').map(Number);
+        const pixelX = currentX + x * this.cellSize;
+        const pixelY = offsetY + y * this.cellSize;
+
+        if (paving.imageElement?.complete && paving.imageElement.naturalWidth > 0) {
+          try {
+            this.ctx.drawImage(
+              paving.imageElement,
+              pixelX,
+              pixelY,
+              this.cellSize,
+              this.cellSize
+            );
+          } catch (e) {
+            this.drawPavingFallback(pixelX, pixelY, this.cellSize, paving.name, paving.category);
+          }
+        } else {
+          this.drawPavingFallback(pixelX, pixelY, this.cellSize, paving.name, paving.category);
+        }
+      });
+
+      // Draw interior grid lines
+      this.ctx.strokeStyle = '#d4af37'; // Gold-ish color for interior grids
+      this.ctx.lineWidth = 1;
+
+      for (let x = 0; x <= interiorWidth; x += this.cellSize) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(currentX + x, offsetY);
+        this.ctx.lineTo(currentX + x, offsetY + interiorHeight);
+        this.ctx.stroke();
+      }
+
+      for (let y = 0; y <= interiorHeight; y += this.cellSize) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(currentX, offsetY + y);
+        this.ctx.lineTo(currentX + interiorWidth, offsetY + y);
+        this.ctx.stroke();
+      }
+
+      // Draw interior items
+      const gridManager = interior.getGridManager();
+      const items = gridManager.getItems();
+      items.forEach((item: PlacedItem) => {
+        this.drawInteriorItem(item, currentX, offsetY);
+      });
+
+      // Highlight if this interior belongs to selected building
+      if (selectedBuildingId && interior.buildingId === selectedBuildingId) {
+        this.ctx.strokeStyle = '#ff6b6b'; // Red highlight
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeRect(currentX - 2, offsetY - 2, interiorWidth + 4, interiorHeight + 4);
+      }
+
+      // Draw label
+      this.ctx.fillStyle = '#000000';
+      this.ctx.font = `${Math.floor(this.cellSize * 0.5)}px Arial`;
+      this.ctx.textAlign = 'center';
+      this.ctx.fillText(
+        `Interior`,
+        currentX + interiorWidth / 2,
+        offsetY - this.cellSize * 0.5
+      );
+
+      currentX += interiorWidth + interiorSpacing;
+    });
+  }
+
+  /**
+   * Draw an item inside an interior
+   */
+  private drawInteriorItem(item: PlacedItem, offsetX: number, offsetY: number): void {
+    const pixelX = offsetX + item.x * this.cellSize;
+    const pixelY = offsetY + item.y * this.cellSize;
+    const pixelWidth = item.width * this.cellSize;
+    const pixelHeight = item.height * this.cellSize;
+
+    const img = item.getImageElement();
+    if (img && img.complete && img.naturalWidth > 0) {
+      try {
+        this.ctx.save();
+        
+        // Apply rotation if needed
+        if (item.rotation && item.rotation !== 0) {
+          const centerX = pixelX + pixelWidth / 2;
+          const centerY = pixelY + pixelHeight / 2;
+          this.ctx.translate(centerX, centerY);
+          this.ctx.rotate((item.rotation * Math.PI) / 180);
+          this.ctx.drawImage(
+            img,
+            -pixelWidth / 2,
+            -pixelHeight / 2,
+            pixelWidth,
+            pixelHeight
+          );
+          this.ctx.restore();
+        } else {
+          this.ctx.drawImage(img, pixelX, pixelY, pixelWidth, pixelHeight);
+        }
+      } catch (e) {
+        this.drawInteriorItemFallback(pixelX, pixelY, pixelWidth, pixelHeight, item.color);
+      }
+    } else {
+      this.drawInteriorItemFallback(pixelX, pixelY, pixelWidth, pixelHeight, item.color);
+    }
+  }
+
+  /**
+   * Draw fallback for interior item
+   */
+  private drawInteriorItemFallback(x: number, y: number, width: number, height: number, color: string): void {
+    this.ctx.fillStyle = color;
+    this.ctx.globalAlpha = 0.6;
+    this.ctx.fillRect(x, y, width, height);
+    this.ctx.globalAlpha = 1.0;
+    this.ctx.strokeStyle = '#000000';
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeRect(x, y, width, height);
+  }
+
+  /**
+   * Draw connection line from selected building to its interior
+   */
+  public drawInteriorConnection(building: PlacedItem, _interiorIndex: number, _totalInteriors: number): void {
+    const mainGridHeight = this.gridHeight * this.cellSize;
+    const padding = this.cellSize * 2;
+
+    // Calculate building center in main grid
+    const buildingCenterX = (building.x + building.width / 2) * this.cellSize;
+    const buildingCenterY = (building.y + building.height / 2) * this.cellSize;
+
+    // Calculate interior position (simplified - assumes interiors are laid out horizontally)
+    // You'll need to calculate actual interior position based on which interior this is
+    const startY = mainGridHeight + padding;
+    
+    // Draw animated dashed line
+    this.ctx.strokeStyle = '#ff6b6b';
+    this.ctx.lineWidth = 2;
+    this.ctx.setLineDash([10, 5]);
+    this.ctx.beginPath();
+    this.ctx.moveTo(buildingCenterX, buildingCenterY);
+    this.ctx.lineTo(buildingCenterX, startY - this.cellSize);
+    this.ctx.stroke();
+    this.ctx.setLineDash([]);
   }
 }

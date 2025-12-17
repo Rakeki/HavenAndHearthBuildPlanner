@@ -2,8 +2,10 @@ import React from 'react';
 import { MeasurementTool } from '@models/MeasurementTool';
 
 interface HeaderProps {
-  gridSize: number;
-  onGridSizeChange: (size: number) => void;
+  gridWidth: number;
+  gridHeight: number;
+  onGridWidthChange: (width: number) => void;
+  onGridHeightChange: (height: number) => void;
   onClear: () => void;
   onSave: () => void;
   onLoad: () => void;
@@ -20,8 +22,10 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  gridSize,
-  onGridSizeChange,
+  gridWidth,
+  gridHeight,
+  onGridWidthChange,
+  onGridHeightChange,
   onClear,
   onSave,
   onLoad,
@@ -73,13 +77,23 @@ export const Header: React.FC<HeaderProps> = ({
           Measure {measurementTool.isToolActive() ? '(ON)' : ''}
         </button>
         <label>
-          Grid Size:{' '}
+          Grid Width:{' '}
           <input
             type="number"
-            value={gridSize}
-            onChange={(e) => onGridSizeChange(parseInt(e.target.value))}
+            value={gridWidth}
+            onChange={(e) => onGridWidthChange(parseInt(e.target.value))}
             min={20}
-            max={100}
+            max={200}
+          />
+        </label>
+        <label>
+          Grid Height:{' '}
+          <input
+            type="number"
+            value={gridHeight}
+            onChange={(e) => onGridHeightChange(parseInt(e.target.value))}
+            min={20}
+            max={200}
           />
         </label>
       </div>

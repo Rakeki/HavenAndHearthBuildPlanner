@@ -14,6 +14,9 @@ export class BuildableItem {
   public readonly gridImage?: string;
   public readonly usesLineTool: boolean;
   public readonly requiresPalisadeOverlap: boolean;
+  public readonly hasInterior: boolean;
+  public readonly interiorWidth?: number;
+  public readonly interiorHeight?: number;
   private imageElement?: HTMLImageElement;
 
   constructor(data: BuildableItemData) {
@@ -27,6 +30,9 @@ export class BuildableItem {
     this.gridImage = data.gridImage;
     this.usesLineTool = data.usesLineTool || false;
     this.requiresPalisadeOverlap = data.requiresPalisadeOverlap || false;
+    this.hasInterior = data.hasInterior || false;
+    this.interiorWidth = data.interiorWidth;
+    this.interiorHeight = data.interiorHeight;
   }
 
   /**
@@ -92,6 +98,7 @@ export class BuildableItem {
       requiresPalisadeOverlap: requiresOverlap,
       orientation,
       rotation: rotation || 0,
+      hasInterior: this.hasInterior,
     }, this.imageElement);
   }
 }
@@ -114,6 +121,8 @@ export class PlacedItem {
   public readonly requiresPalisadeOverlap: boolean;
   public orientation?: 'horizontal' | 'vertical' | 'corner';
   public rotation: number; // 0, 90, 180, or 270 degrees
+  public readonly hasInterior: boolean;
+  public interiorId?: string;
   private imageElement?: HTMLImageElement;
 
   constructor(data: PlacedItemData, imageElement?: HTMLImageElement) {
@@ -131,6 +140,8 @@ export class PlacedItem {
     this.requiresPalisadeOverlap = data.requiresPalisadeOverlap || false;
     this.orientation = data.orientation;
     this.rotation = data.rotation || 0;
+    this.hasInterior = data.hasInterior || false;
+    this.interiorId = data.interiorId;
     this.imageElement = imageElement;
   }
 
@@ -241,6 +252,8 @@ export class PlacedItem {
       requiresPalisadeOverlap: this.requiresPalisadeOverlap,
       orientation: this.orientation,
       rotation: this.rotation,
+      hasInterior: this.hasInterior,
+      interiorId: this.interiorId,
     };
   }
 }

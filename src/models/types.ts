@@ -28,6 +28,9 @@ export interface BuildableItemData {
   gridImage?: string;
   usesLineTool?: boolean;
   requiresPalisadeOverlap?: boolean;
+  hasInterior?: boolean;
+  interiorWidth?: number;
+  interiorHeight?: number;
 }
 
 export interface PavingTypeData {
@@ -41,10 +44,27 @@ export interface GridCell {
   y: number;
 }
 
-export interface SaveData {
-  gridSize: number;
+export interface GridSize {
+  width: number;
+  height: number;
+}
+
+export interface InteriorData {
+  id: string;
+  buildingId: string;
+  width: number;
+  height: number;
   items: PlacedItemData[];
   paving: Record<string, PavingData>;
+}
+
+export interface SaveData {
+  gridSize?: number; // Legacy support
+  gridWidth?: number;
+  gridHeight?: number;
+  items: PlacedItemData[];
+  paving: Record<string, PavingData>;
+  interiors?: Record<string, InteriorData>;
 }
 
 export interface PlacedItemData {
@@ -62,6 +82,8 @@ export interface PlacedItemData {
   requiresPalisadeOverlap?: boolean;
   orientation?: 'horizontal' | 'vertical' | 'corner';
   rotation?: number; // 0, 90, 180, or 270 degrees
+  hasInterior?: boolean;
+  interiorId?: string;
 }
 
 export interface PavingData {

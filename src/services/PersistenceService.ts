@@ -1,5 +1,6 @@
 import { PlacedItem } from '@models/BuildableItem';
 import { PavingManager } from '@models/PavingManager';
+import { InteriorManager } from '@models/InteriorManager';
 import { SaveData } from '@models/types';
 
 /**
@@ -10,14 +11,18 @@ export class PersistenceService {
    * Create save data from current state
    */
   public createSaveData(
-    gridSize: number,
+    gridWidth: number,
+    gridHeight: number,
     items: PlacedItem[],
-    pavingManager: PavingManager
+    pavingManager: PavingManager,
+    interiorManager?: InteriorManager
   ): SaveData {
     return {
-      gridSize,
+      gridWidth,
+      gridHeight,
       items: items.map(item => item.toJSON()),
       paving: pavingManager.toJSON(),
+      interiors: interiorManager?.toJSON(),
     };
   }
 

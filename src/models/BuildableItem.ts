@@ -17,6 +17,9 @@ export class BuildableItem {
   public readonly hasInterior: boolean;
   public readonly interiorWidth?: number;
   public readonly interiorHeight?: number;
+  public readonly hasStairs?: boolean;
+  public readonly defaultFloors?: number;
+  public readonly unlocksCellar?: boolean;
   private imageElement?: HTMLImageElement;
 
   constructor(data: BuildableItemData) {
@@ -33,6 +36,9 @@ export class BuildableItem {
     this.hasInterior = data.hasInterior || false;
     this.interiorWidth = data.interiorWidth;
     this.interiorHeight = data.interiorHeight;
+    this.hasStairs = data.hasStairs;
+    this.defaultFloors = data.defaultFloors;
+    this.unlocksCellar = data.unlocksCellar;
   }
 
   /**
@@ -123,6 +129,8 @@ export class PlacedItem {
   public rotation: number; // 0, 90, 180, or 270 degrees
   public readonly hasInterior: boolean;
   public interiorId?: string;
+  public hasStairs?: boolean;
+  public unlocksCellar?: boolean;
   private imageElement?: HTMLImageElement;
 
   constructor(data: PlacedItemData, imageElement?: HTMLImageElement) {
@@ -142,6 +150,8 @@ export class PlacedItem {
     this.rotation = data.rotation || 0;
     this.hasInterior = data.hasInterior || false;
     this.interiorId = data.interiorId;
+    this.hasStairs = data.hasStairs;
+    this.unlocksCellar = data.unlocksCellar;
     this.imageElement = imageElement;
   }
 
@@ -254,6 +264,8 @@ export class PlacedItem {
       rotation: this.rotation,
       hasInterior: this.hasInterior,
       interiorId: this.interiorId,
+      hasStairs: this.hasStairs,
+      unlocksCellar: this.unlocksCellar,
     };
   }
 }

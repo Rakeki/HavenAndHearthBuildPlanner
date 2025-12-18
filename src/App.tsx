@@ -21,6 +21,9 @@ function App() {
   const [showBuildables, setShowBuildables] = useState(true);
   const [hoverPosition, setHoverPosition] = useState<{x: number, y: number} | null>(null);
   const [activeInteriorId, setActiveInteriorId] = useState<string | null>(null);
+  const [activeFloor, setActiveFloor] = useState(0);
+  const [showInteriorDialog, setShowInteriorDialog] = useState(false);
+  const [interiorDialogBuilding, setInteriorDialogBuilding] = useState<PlacedItem | null>(null);
 
   const {
     canvasRef,
@@ -31,7 +34,7 @@ function App() {
     measurementTool,
     render,
     handleZoom,
-  } = useCanvas(gridWidth, gridHeight, showBuildables, activeInteriorId);
+  } = useCanvas(gridWidth, gridHeight, showBuildables, activeInteriorId, activeFloor);
 
   const selection = useSelection();
   const undoRedo = useUndoRedo();
@@ -62,6 +65,7 @@ function App() {
       })));
       
       pavingManager.registerPavingTypes(pavings);
+      interiorManager.setPavingTypes(pavings);
       
       // Preload images
       await Promise.all([
@@ -115,24 +119,73 @@ function App() {
         }
       } else if ((e.key === 'Delete' || e.key === 'Backspace') && !isTyping) {
         // Delete selected item(s) - only if not typing
-        if (selection.selectedPlaced) {
+        // Get the appropriate grid manager (interior or main)
+        const currentGridManager = activeInteriorId ? 
+          interiorManager.getInterior(activeInteriorId)?.getGridManager() :
+          gridManager;
+          
+        if (currentGridManager && selection.selectedPlaced) {
           saveCurrentState();
-          // Remove interior if building has one
-          if (selection.selectedPlaced.interiorId) {
+          // Remove interior if building has one (only in main grid)
+          if (!activeInteriorId && selection.selectedPlaced.interiorId) {
             interiorManager.removeInterior(`${selection.selectedPlaced.name}_${selection.selectedPlaced.x}_${selection.selectedPlaced.y}`);
           }
-          gridManager.removeItem(selection.selectedPlaced);
+          
+          // Check if removing cellar buildable from ground floor
+          if (activeInteriorId && activeFloor === 0 && selection.selectedPlaced.unlocksCellar) {
+            const interior = interiorManager.getInterior(activeInteriorId);
+            if (interior) {
+              const floor0Grid = interior.getGridManager(0);
+              // Check if there are any other cellar buildables on floor 0 after removal
+              const otherCellarItems = floor0Grid?.getItems().filter(
+                (item: PlacedItem) => item !== selection.selectedPlaced && item.unlocksCellar
+              ) || [];
+              
+              if (otherCellarItems.length === 0 && interior.hasCellarFloor()) {
+                interior.removeCellarFloor();
+                console.log('[Cellar] Removed cellar floor for interior:', activeInteriorId);
+                // Switch to ground floor if currently on cellar
+                if (activeFloor === -1) {
+                  setActiveFloor(0);
+                }
+              }
+            }
+          }
+          
+          currentGridManager.removeItem(selection.selectedPlaced);
           selection.selectPlaced(null);
           render();
-        } else if (selection.selectedPlacedItems && selection.selectedPlacedItems.length > 0) {
+        } else if (currentGridManager && selection.selectedPlacedItems && selection.selectedPlacedItems.length > 0) {
           saveCurrentState();
           selection.selectedPlacedItems.forEach((item: PlacedItem) => {
-            // Remove interior if building has one
-            if (item.interiorId) {
+            // Remove interior if building has one (only in main grid)
+            if (!activeInteriorId && item.interiorId) {
               interiorManager.removeInterior(`${item.name}_${item.x}_${item.y}`);
             }
-            gridManager.removeItem(item);
+            currentGridManager.removeItem(item);
           });
+          
+          // Check if removing cellar buildables from ground floor
+          if (activeInteriorId && activeFloor === 0) {
+            const interior = interiorManager.getInterior(activeInteriorId);
+            if (interior) {
+              const floor0Grid = interior.getGridManager(0);
+              // Check if there are any cellar buildables remaining on floor 0
+              const remainingCellarItems = floor0Grid?.getItems().filter(
+                (item: PlacedItem) => item.unlocksCellar
+              ) || [];
+              
+              if (remainingCellarItems.length === 0 && interior.hasCellarFloor()) {
+                interior.removeCellarFloor();
+                console.log('[Cellar] Removed cellar floor for interior:', activeInteriorId);
+                // Switch to ground floor if currently on cellar
+                if (activeFloor === -1) {
+                  setActiveFloor(0);
+                }
+              }
+            }
+          }
+          
           selection.selectMultiplePlaced([]);
           render();
         }
@@ -229,6 +282,28 @@ function App() {
       interiorManager.loadInteriors(data.interiors);
     }
     
+    // Create missing interiors for buildings that should have them (backwards compatibility)
+    const buildables = dataService.getBuildableItems();
+    items.forEach(item => {
+      if (item.hasInterior && !item.interiorId) {
+        // Find the buildable definition to get interior dimensions
+        const buildableData = buildables.find(b => b.name === item.name);
+        if (buildableData?.hasInterior && buildableData.interiorWidth && buildableData.interiorHeight) {
+          const buildingId = `${item.name}_${item.x}_${item.y}`;
+          const floors = buildableData.defaultFloors || 1;
+          const interiorId = interiorManager.createInterior(
+            buildingId,
+            buildableData.interiorWidth,
+            buildableData.interiorHeight,
+            floors
+          );
+          item.interiorId = interiorId;
+          item.hasStairs = buildableData.hasStairs;
+          console.log('[Load] Created missing interior for:', item.name, 'interiorId:', interiorId);
+        }
+      }
+    });
+    
     selection.clearAll();
     
     // Clear undo/redo history and save initial state
@@ -301,18 +376,29 @@ function App() {
             dataService={dataService}
             onHoverChange={setHoverPosition}
             activeInteriorId={activeInteriorId}
-            onOpenInterior={(interiorId: string) => setActiveInteriorId(interiorId)}
-            onCloseInterior={() => setActiveInteriorId(null)}
+            onOpenInterior={(interiorId: string) => {
+              setActiveInteriorId(interiorId);
+              setActiveFloor(0);
+            }}
+            onCloseInterior={() => {
+              setActiveInteriorId(null);
+              setActiveFloor(0);
+            }}
+            activeFloor={activeFloor}
+            onFloorChange={setActiveFloor}
           />
           
           <InfoPanel
             selection={selection}
             gridManager={gridManager}
             pavingManager={pavingManager}
+            interiorManager={interiorManager}
             measurementTool={measurementTool}
             render={render}
             onStateChange={saveCurrentState}
             hoverPosition={hoverPosition}
+            activeInteriorId={activeInteriorId}
+            activeFloor={activeFloor}
           />
         </main>
         

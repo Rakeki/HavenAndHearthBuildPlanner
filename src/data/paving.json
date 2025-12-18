@@ -1,5 +1,10 @@
 [
   {
+    "name": "interior_floor",
+    "category": "interior",
+    "image": "images/paving/interior_floor.png"
+  },
+  {
     "name": "Alabaster",
     "category": "stone",
     "image": "images/paving/Alabaster.png"

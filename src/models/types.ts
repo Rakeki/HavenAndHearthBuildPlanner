@@ -31,6 +31,9 @@ export interface BuildableItemData {
   hasInterior?: boolean;
   interiorWidth?: number;
   interiorHeight?: number;
+  hasStairs?: boolean;
+  defaultFloors?: number;
+  unlocksCellar?: boolean;
 }
 
 export interface PavingTypeData {
@@ -54,8 +57,13 @@ export interface InteriorData {
   buildingId: string;
   width: number;
   height: number;
+  floors?: number;
   items: PlacedItemData[];
   paving: Record<string, PavingData>;
+  floorData?: Record<number, {
+    items: PlacedItemData[];
+    paving: Record<string, PavingData>;
+  }>;
 }
 
 export interface SaveData {
@@ -84,6 +92,8 @@ export interface PlacedItemData {
   rotation?: number; // 0, 90, 180, or 270 degrees
   hasInterior?: boolean;
   interiorId?: string;
+  hasStairs?: boolean;
+  unlocksCellar?: boolean;
 }
 
 export interface PavingData {

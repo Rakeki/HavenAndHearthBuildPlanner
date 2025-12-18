@@ -764,7 +764,7 @@ export class CanvasRenderer {
   /**
    * Draw a single interior as an overlay (full canvas)
    */
-  public drawInteriorOverlay(interior: any, selectedItem?: PlacedItem | null, selectedItems?: PlacedItem[], dragPreview?: { x: number, y: number, isValid: boolean }): void {
+  public drawInteriorOverlay(interior: any, floor: number, selectedItem?: PlacedItem | null, selectedItems?: PlacedItem[], dragPreview?: { x: number, y: number, isValid: boolean }): void {
     const size = interior.getSize();
     const interiorWidth = size.width * this.cellSize;
     const interiorHeight = size.height * this.cellSize;
@@ -773,8 +773,10 @@ export class CanvasRenderer {
     this.ctx.fillStyle = '#fff8e1'; // Slightly warm background for interiors
     this.ctx.fillRect(0, 0, interiorWidth, interiorHeight);
 
-    // Draw interior paving
-    const pavingManager = interior.getPavingManager();
+    // Draw interior paving for the specified floor
+    const pavingManager = interior.getPavingManager(floor);
+    if (!pavingManager) return;
+    
     const allPaving = pavingManager.getAllPaving();
     allPaving.forEach((paving: any, key: string) => {
       const [x, y] = key.split(',').map(Number);
@@ -816,13 +818,15 @@ export class CanvasRenderer {
       this.ctx.stroke();
     }
 
-    // Draw interior items
-    const gridManager = interior.getGridManager();
-    const items = gridManager.getItems();
-    items.forEach((item: PlacedItem) => {
-      const isSelected = selectedItem === item || selectedItems?.includes(item);
-      this.drawInteriorItemInOverlay(item, isSelected);
-    });
+    // Draw interior items for the specified floor
+    const gridManager = interior.getGridManager(floor);
+    if (gridManager) {
+      const items = gridManager.getItems();
+      items.forEach((item: PlacedItem) => {
+        const isSelected = selectedItem === item || selectedItems?.includes(item) || false;
+        this.drawInteriorItemInOverlay(item, isSelected);
+      });
+    }
 
     // Draw drag preview if applicable
     if (dragPreview) {

@@ -7,7 +7,7 @@ import { InteriorManager } from '@models/InteriorManager';
 import { PlacedItem } from '@models/BuildableItem';
 import { Point } from '@models/types';
 
-export function useCanvas(gridWidth: number, gridHeight: number, showBuildables: boolean = true, activeInteriorId: string | null = null) {
+export function useCanvas(gridWidth: number, gridHeight: number, showBuildables: boolean = true, activeInteriorId: string | null = null, activeFloor: number = 0) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [renderer, setRenderer] = useState<CanvasRenderer | null>(null);
   const [gridManager] = useState(() => new GridManager(gridWidth, gridHeight));
@@ -158,7 +158,7 @@ export function useCanvas(gridWidth: number, gridHeight: number, showBuildables:
         // Interior overlay mode - draw only the interior
         const interior = interiorManager.getInterior(activeInteriorId);
         if (interior) {
-          renderer.drawInteriorOverlay(interior, selectedItem, selectedItems, dragPreview);
+          renderer.drawInteriorOverlay(interior, activeFloor, selectedItem, selectedItems, dragPreview);
         }
       } else {
         // Normal mode - draw main grid
@@ -211,7 +211,7 @@ export function useCanvas(gridWidth: number, gridHeight: number, showBuildables:
         );
       }
     },
-    [renderer, gridManager, pavingManager, interiorManager, measurementTool, showBuildables, activeInteriorId]
+    [renderer, gridManager, pavingManager, interiorManager, measurementTool, showBuildables, activeInteriorId, activeFloor]
   );
 
   const handleZoom = useCallback((delta: number) => {

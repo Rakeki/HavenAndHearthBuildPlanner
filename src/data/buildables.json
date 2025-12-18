@@ -36,6 +36,14 @@
     "imageUrl": "https://ringofbrodgar.com/images/9/9a/Arched_Chair.png"
   },
   {
+    "name": "Cellar",
+    "category": "storage",
+    "width": 1,
+    "height": 1,
+    "color": "#654321",
+    "unlocksCellar": true
+  },
+  {
     "name": "Archery Target",
     "category": "other",
     "width": 1,
@@ -54,7 +62,9 @@
     "imageUrl": "https://ringofbrodgar.com/images/thumb/a/a6/Archery_Tower.png/220px-Archery_Tower.png",
     "hasInterior": true,
     "interiorWidth": 3,
-    "interiorHeight": 3
+    "interiorHeight": 3,
+    "hasStairs": true,
+    "defaultFloors": 2
   },
   {
     "name": "Barrel",
@@ -716,8 +726,10 @@
     "image": "images/320px-Great_Hall.png",
     "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c7/Great_Hall.png/320px-Great_Hall.png",
     "hasInterior": true,
-    "interiorWidth": 8,
-    "interiorHeight": 12
+    "interiorWidth": 11,
+    "interiorHeight": 15,
+    "hasStairs": true,
+    "defaultFloors": 3
   },
   {
     "name": "Greenhouse",
@@ -818,8 +830,8 @@
   {
     "name": "Kiln",
     "category": "crafting",
-    "width": 2,
-    "height": 2,
+    "width": 3,
+    "height": 3,
     "color": "#DC143C",
     "image": "images/Kiln.png",
     "imageUrl": "https://ringofbrodgar.com/images/5/58/Kiln.png"
@@ -1496,7 +1508,12 @@
     "height": 9,
     "color": "#A0522D",
     "image": "images/320px-Stone_Mansion.png",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/b/bf/Stone_Mansion.png/320px-Stone_Mansion.png"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/b/bf/Stone_Mansion.png/320px-Stone_Mansion.png",
+    "hasInterior": true,
+    "interiorWidth": 8,
+    "interiorHeight": 8,
+    "hasStairs": true,
+    "defaultFloors": 2
   },
   {
     "name": "Stone Table",
@@ -1525,8 +1542,10 @@
     "image": "images/205px-Stone_Tower.png",
     "imageUrl": "https://ringofbrodgar.com/images/thumb/c/c4/Stone_Tower.png/205px-Stone_Tower.png",
     "hasInterior": true,
-    "interiorWidth": 5,
-    "interiorHeight": 5
+    "interiorWidth": 7,
+    "interiorHeight": 7,
+    "hasStairs": true,
+    "defaultFloors": 5
   },
   {
     "name": "Stonehut",
@@ -1552,11 +1571,16 @@
   {
     "name": "Stonestead",
     "category": "housing",
-    "width": 5,
-    "height": 8,
+    "width": 7,
+    "height": 9,
     "color": "#A0522D",
     "image": "images/320px-Stonestead.jpeg",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/d/d8/Stonestead.jpeg/320px-Stonestead.jpeg"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/d/d8/Stonestead.jpeg/320px-Stonestead.jpeg",
+    "hasInterior": true,
+    "interiorWidth": 5,
+    "interiorHeight": 9,
+    "hasStairs": true,
+    "defaultFloors": 2
   },
   {
     "name": "Straw Basket",
@@ -1615,8 +1639,8 @@
   {
     "name": "Tar Kiln",
     "category": "crafting",
-    "width": 4,
-    "height": 4,
+    "width": 5,
+    "height": 5,
     "color": "#DC143C",
     "image": "images/320px-Tar_Kiln.png",
     "imageUrl": "https://ringofbrodgar.com/images/thumb/5/5a/Tar_Kiln.png/320px-Tar_Kiln.png"
@@ -1665,7 +1689,12 @@
     "color": "#A0522D",
     "image": "images/320px-Timber_House.png",
     "imageUrl": "https://ringofbrodgar.com/images/thumb/2/2f/Timber_House.png/320px-Timber_House.png",
-    "gridImage": "images/texture/timber-house.png"
+    "gridImage": "images/texture/timber-house.png",
+    "hasInterior": true,
+    "interiorWidth": 6,
+    "interiorHeight": 6,
+    "hasStairs": false,
+    "defaultFloors": 1
   },
   {
     "name": "Torchpost",
@@ -1764,7 +1793,12 @@
     "height": 11,
     "color": "#A0522D",
     "image": "images/320px-Watermill.jpg",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f9/Watermill.jpg/320px-Watermill.jpg"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/f/f9/Watermill.jpg/320px-Watermill.jpg",
+    "hasInterior": true,
+    "interiorWidth": 5,
+    "interiorHeight": 10,
+    "hasStairs": true,
+    "defaultFloors": 2
   },
   {
     "name": "Well",
@@ -1827,7 +1861,12 @@
     "height": 5,
     "color": "#A0522D",
     "image": "images/231px-Windmill.png",
-    "imageUrl": "https://ringofbrodgar.com/images/thumb/6/68/Windmill.png/231px-Windmill.png"
+    "imageUrl": "https://ringofbrodgar.com/images/thumb/6/68/Windmill.png/231px-Windmill.png",
+    "hasInterior": true,
+    "interiorWidth": 5,
+    "interiorHeight": 5,
+    "hasStairs": true,
+    "defaultFloors": 3
   },
   {
     "name": "Wine Rack",

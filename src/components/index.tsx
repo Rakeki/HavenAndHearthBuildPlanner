@@ -94,6 +94,8 @@ export const PlannerCanvas: React.FC<any> = ({
   activeInteriorId,
   onOpenInterior,
   onCloseInterior,
+  activeFloor,
+  onFloorChange,
 }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStart, setDragStart] = React.useState<any>(null);
@@ -134,9 +136,16 @@ export const PlannerCanvas: React.FC<any> = ({
     // Don't handle placement when measuring
     if (measurementTool.isToolActive()) return;
 
+    // Get the appropriate grid manager
+    const currentGridManager = activeInteriorId ? 
+      interiorManager.getInterior(activeInteriorId)?.getGridManager(activeFloor) :
+      gridManager;
+    
+    if (!currentGridManager) return;
+
     // Check if clicking on a selected placed item to start dragging it
     if (selection.selectedPlaced && e.button === 0) {
-      const clickedItem = gridManager.getItemAt(pos.x, pos.y);
+      const clickedItem = currentGridManager.getItemAt(pos.x, pos.y);
       if (clickedItem === selection.selectedPlaced) {
         setIsDraggingPlaced(true);
         setDraggedItemOriginalPos({ x: clickedItem.x, y: clickedItem.y });
@@ -149,7 +158,7 @@ export const PlannerCanvas: React.FC<any> = ({
     // Start selection box if nothing is selected and left click without modifiers on empty space
     if (!selection.selectedBuildable && !selection.selectedPaving && !selection.erasePavingMode && 
         e.button === 0 && !selection.lineTool.isActive()) {
-      const clickedItem = gridManager.getItemAt(pos.x, pos.y);
+      const clickedItem = currentGridManager.getItemAt(pos.x, pos.y);
       
       // If clicking on empty space, start selection box
       if (!clickedItem) {
@@ -162,6 +171,14 @@ export const PlannerCanvas: React.FC<any> = ({
 
     // Handle paving drag
     if (selection.selectedPaving || selection.erasePavingMode) {
+      // Get the appropriate paving manager
+      const activeInterior = activeInteriorId ? interiorManager.getInterior(activeInteriorId) : null;
+      const currentPavingManager = activeInterior 
+        ? activeInterior.getPavingManager(activeFloor)
+        : pavingManager;
+      
+      if (!currentPavingManager) return;
+      
       setIsDragging(true);
       setDragStart(pos);
       setStateChanged(true);
@@ -171,9 +188,9 @@ export const PlannerCanvas: React.FC<any> = ({
       if (selection.pavingShapeMode === 'line') {
         // Single cell placement in line mode
         if (selection.erasePavingMode) {
-          pavingManager.removePaving(pos.x, pos.y);
+          currentPavingManager.removePaving(pos.x, pos.y);
         } else if (selection.selectedPaving) {
-          pavingManager.placePaving(pos.x, pos.y, selection.selectedPaving);
+          currentPavingManager.placePaving(pos.x, pos.y, selection.selectedPaving);
         }
         render();
       } else {
@@ -193,7 +210,7 @@ export const PlannerCanvas: React.FC<any> = ({
       
       // Get the appropriate grid manager (interior or main)
       const currentGridManager = activeInteriorId ? 
-        interiorManager.getInterior(activeInteriorId)?.getGridManager() :
+        interiorManager.getInterior(activeInteriorId)?.getGridManager(activeFloor || 0) :
         gridManager;
       
       if (!currentGridManager) return;
@@ -269,22 +286,32 @@ export const PlannerCanvas: React.FC<any> = ({
         const newItem = selection.selectedBuildable.createPlacedItem(pos.x, pos.y, undefined, selection.previewRotation);
         if (currentGridManager.addItem(newItem)) {
           // Create interior if building has interior (only in main grid, not in interior)
-          if (!activeInteriorId) {
-            console.log('[Placement] Building placed:', newItem.name, 'hasInterior:', selection.selectedBuildable.hasInterior);
-            if (selection.selectedBuildable.hasInterior && selection.selectedBuildable.interiorWidth && selection.selectedBuildable.interiorHeight) {
-              const buildingId = `${newItem.name}_${newItem.x}_${newItem.y}`;
-              const interiorId = interiorManager.createInterior(
-                buildingId,
-                selection.selectedBuildable.interiorWidth,
-                selection.selectedBuildable.interiorHeight
-              );
-              newItem.interiorId = interiorId;
-              console.log('[Placement] Created interior:', interiorId, 'for building:', newItem.name, 'dimensions:', selection.selectedBuildable.interiorWidth, 'x', selection.selectedBuildable.interiorHeight);
-              console.log('[Placement] Total interiors now:', interiorManager.getAllInteriors().length);
-            } else {
-              console.log('[Placement] No interior created - hasInterior:', selection.selectedBuildable.hasInterior, 'width:', selection.selectedBuildable.interiorWidth, 'height:', selection.selectedBuildable.interiorHeight);
+          if (!activeInteriorId && selection.selectedBuildable.hasInterior && 
+              selection.selectedBuildable.interiorWidth && selection.selectedBuildable.interiorHeight) {
+            const buildingId = `${newItem.name}_${newItem.x}_${newItem.y}`;
+            const floors = selection.selectedBuildable.defaultFloors || 1;
+            const interiorId = interiorManager.createInterior(
+              buildingId,
+              selection.selectedBuildable.interiorWidth,
+              selection.selectedBuildable.interiorHeight,
+              floors
+            );
+            newItem.interiorId = interiorId;
+            newItem.hasStairs = selection.selectedBuildable.hasStairs;
+            console.log('[Placement] Created interior:', interiorId, 'for building:', newItem.name, 
+                       'dimensions:', selection.selectedBuildable.interiorWidth, 'x', selection.selectedBuildable.interiorHeight, 'floors:', floors);
+          }
+          
+          // Check if cellar buildable placed on ground floor of interior
+          if (activeInteriorId && activeFloor === 0 && selection.selectedBuildable.unlocksCellar) {
+            const interior = interiorManager.getInterior(activeInteriorId);
+            if (interior && !interior.hasCellarFloor()) {
+              const pavingTypes = Array.from((pavingManager as any).pavingTypes?.values() || []);
+              interior.addCellarFloor(pavingTypes);
+              console.log('[Cellar] Added cellar floor for interior:', activeInteriorId);
             }
           }
+          
           newItem.preloadImage().then(() => render());
           render();
         }
@@ -332,8 +359,8 @@ export const PlannerCanvas: React.FC<any> = ({
       return;
     }
 
-    // Handle line tool preview
-    if (selection.selectedBuildable && selection.selectedBuildable.usesLineTool) {
+    // Handle line tool preview (not in interior mode)
+    if (!activeInteriorId && selection.selectedBuildable && selection.selectedBuildable.usesLineTool) {
       if (selection.lineTool.isActive()) {
         // Update line preview
         selection.lineTool.updateEndPoint(pos);
@@ -348,25 +375,40 @@ export const PlannerCanvas: React.FC<any> = ({
 
     // Show buildable preview at cursor when buildable is selected (and not dragging)
     if (!isDragging && selection.selectedBuildable) {
-      // Apply rotation to dimensions for placement check
-      const shouldSwap = selection.previewRotation === 90 || selection.previewRotation === 270;
-      const width = shouldSwap ? selection.selectedBuildable.height : selection.selectedBuildable.width;
-      const height = shouldSwap ? selection.selectedBuildable.width : selection.selectedBuildable.height;
+      // Get the appropriate grid manager
+      const currentGridManager = activeInteriorId ? 
+        interiorManager.getInterior(activeInteriorId)?.getGridManager() :
+        gridManager;
       
-      const isValid = gridManager.canPlaceItem(
-        pos.x,
-        pos.y,
-        width,
-        height,
-        null,
-        selection.selectedBuildable.requiresPalisadeOverlap
-      );
-      render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid, rotation: selection.previewRotation });
+      if (currentGridManager) {
+        // Apply rotation to dimensions for placement check
+        const shouldSwap = selection.previewRotation === 90 || selection.previewRotation === 270;
+        const width = shouldSwap ? selection.selectedBuildable.height : selection.selectedBuildable.width;
+        const height = shouldSwap ? selection.selectedBuildable.width : selection.selectedBuildable.height;
+        
+        const isValid = currentGridManager.canPlaceItem(
+          pos.x,
+          pos.y,
+          width,
+          height,
+          null,
+          selection.selectedBuildable.requiresPalisadeOverlap
+        );
+        render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid, rotation: selection.previewRotation });
+      }
       return;
     }
 
     // Handle paving drag
     if (isDragging && dragStart && (selection.selectedPaving || selection.erasePavingMode)) {
+      // Get the appropriate paving manager
+      const activeInterior = activeInteriorId ? interiorManager.getInterior(activeInteriorId) : null;
+      const currentPavingManager = activeInterior 
+        ? activeInterior.getPavingManager(activeFloor)
+        : pavingManager;
+      
+      if (!currentPavingManager) return;
+      
       const cells = PavingManager.getCellsByShape(
         dragStart.x, 
         dragStart.y, 
@@ -379,9 +421,9 @@ export const PlannerCanvas: React.FC<any> = ({
         // Line mode: commit immediately as before (continuous drawing)
         cells.forEach((cell: any) => {
           if (selection.erasePavingMode) {
-            pavingManager.removePaving(cell.x, cell.y);
+            currentPavingManager.removePaving(cell.x, cell.y);
           } else if (selection.selectedPaving) {
-            pavingManager.placePaving(cell.x, cell.y, selection.selectedPaving);
+            currentPavingManager.placePaving(cell.x, cell.y, selection.selectedPaving);
           }
         });
         setDragStart(pos);
@@ -419,46 +461,60 @@ export const PlannerCanvas: React.FC<any> = ({
     }
     // Handle dragging a placed item
     else if (isDraggingPlaced && selection.selectedPlaced) {
-      const newX = pos.x - dragOffset.x;
-      const newY = pos.y - dragOffset.y;
+      // Get the appropriate grid manager
+      const currentGridManager = activeInteriorId ? 
+        interiorManager.getInterior(activeInteriorId)?.getGridManager() :
+        gridManager;
       
-      // Temporarily move to show preview
-      const item = selection.selectedPlaced;
-      const oldX = item.x;
-      const oldY = item.y;
-      item.moveTo(newX, newY);
-      
-      const isValid = gridManager.canPlaceItem(
-        newX,
-        newY,
-        item.width,
-        item.height,
-        item,
-        item.requiresPalisadeOverlap
-      );
-      
-      // Render with preview
-      render(item, undefined, undefined, undefined, undefined, undefined, undefined, undefined, { x: newX, y: newY, isValid });
-      
-      // Restore original position (actual move happens on mouse up)
-      item.moveTo(oldX, oldY);
+      if (currentGridManager) {
+        const newX = pos.x - dragOffset.x;
+        const newY = pos.y - dragOffset.y;
+        
+        // Temporarily move to show preview
+        const item = selection.selectedPlaced;
+        const oldX = item.x;
+        const oldY = item.y;
+        item.moveTo(newX, newY);
+        
+        const isValid = currentGridManager.canPlaceItem(
+          newX,
+          newY,
+          item.width,
+          item.height,
+          item,
+          item.requiresPalisadeOverlap
+        );
+        
+        // Render with preview
+        render(item, undefined, undefined, undefined, undefined, undefined, undefined, undefined, { x: newX, y: newY, isValid });
+        
+        // Restore original position (actual move happens on mouse up)
+        item.moveTo(oldX, oldY);
+      }
     }
     // Show preview when just hovering with selected buildable
     else if (selection.selectedBuildable) {
-      // Apply rotation to dimensions for placement check
-      const shouldSwap = selection.previewRotation === 90 || selection.previewRotation === 270;
-      const width = shouldSwap ? selection.selectedBuildable.height : selection.selectedBuildable.width;
-      const height = shouldSwap ? selection.selectedBuildable.width : selection.selectedBuildable.height;
+      // Get the appropriate grid manager
+      const currentGridManager = activeInteriorId ? 
+        interiorManager.getInterior(activeInteriorId)?.getGridManager() :
+        gridManager;
       
-      const isValid = gridManager.canPlaceItem(
-        pos.x,
-        pos.y,
-        width,
-        height,
-        null,
-        selection.selectedBuildable.requiresPalisadeOverlap
-      );
-      render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid, rotation: selection.previewRotation });
+      if (currentGridManager) {
+        // Apply rotation to dimensions for placement check
+        const shouldSwap = selection.previewRotation === 90 || selection.previewRotation === 270;
+        const width = shouldSwap ? selection.selectedBuildable.height : selection.selectedBuildable.width;
+        const height = shouldSwap ? selection.selectedBuildable.width : selection.selectedBuildable.height;
+        
+        const isValid = currentGridManager.canPlaceItem(
+          pos.x,
+          pos.y,
+          width,
+          height,
+          null,
+          selection.selectedBuildable.requiresPalisadeOverlap
+        );
+        render(selection.selectedPlaced, pos, { buildable: selection.selectedBuildable, isValid, rotation: selection.previewRotation });
+      }
     }
     
     // Track hover position for info display
@@ -482,7 +538,12 @@ export const PlannerCanvas: React.FC<any> = ({
               const newX = gridPos.x - dragOffset.x;
               const newY = gridPos.y - dragOffset.y;
               
-              if (gridManager.moveItem(selection.selectedPlaced, newX, newY)) {
+              // Get the appropriate grid manager
+              const currentGridManager = activeInteriorId ? 
+                interiorManager.getInterior(activeInteriorId)?.getGridManager() :
+                gridManager;
+              
+              if (currentGridManager && currentGridManager.moveItem(selection.selectedPlaced, newX, newY)) {
                 if (onStateChange) onStateChange();
               } else {
                 // Move failed, revert to original position
@@ -507,37 +568,52 @@ export const PlannerCanvas: React.FC<any> = ({
     if (isSelecting && selectionStart && selectionEnd) {
       console.log('Completing selection from', selectionStart, 'to', selectionEnd);
       
-      const selectedItems = gridManager.getItemsInBounds(
-        selectionStart.x,
-        selectionStart.y,
-        selectionEnd.x,
-        selectionEnd.y
-      );
-      console.log('Found items in bounds:', selectedItems.length);
+      // Get the appropriate grid manager
+      const currentGridManager = activeInteriorId ? 
+        interiorManager.getInterior(activeInteriorId)?.getGridManager() :
+        gridManager;
       
-      setIsSelecting(false);
-      setSelectionStart(null);
-      setSelectionEnd(null);
-      setJustCompletedSelection(true);
-      
-      if (selectedItems.length > 0) {
-        selection.selectMultiplePlaced(selectedItems);
+      if (currentGridManager) {
+        const selectedItems = currentGridManager.getItemsInBounds(
+          selectionStart.x,
+          selectionStart.y,
+          selectionEnd.x,
+          selectionEnd.y
+        );
+        console.log('Found items in bounds:', selectedItems.length);
+        
+        setIsSelecting(false);
+        setSelectionStart(null);
+        setSelectionEnd(null);
+        setJustCompletedSelection(true);
+        
+        if (selectedItems.length > 0) {
+          selection.selectMultiplePlaced(selectedItems);
+        }
+        
+        // Always render to clear the selection box visual
+        render();
       }
-      
-      // Always render to clear the selection box visual
-      render();
       return;
     }
     
     // Commit preview paving if any (for rectangle/circle modes)
     if (previewPavingCells.length > 0) {
-      previewPavingCells.forEach((cell) => {
-        if (selection.erasePavingMode) {
-          pavingManager.removePaving(cell.x, cell.y);
-        } else if (selection.selectedPaving) {
-          pavingManager.placePaving(cell.x, cell.y, selection.selectedPaving);
-        }
-      });
+      // Get the appropriate paving manager
+      const activeInterior = activeInteriorId ? interiorManager.getInterior(activeInteriorId) : null;
+      const currentPavingManager = activeInterior 
+        ? activeInterior.getPavingManager(activeFloor)
+        : pavingManager;
+      
+      if (currentPavingManager) {
+        previewPavingCells.forEach((cell) => {
+          if (selection.erasePavingMode) {
+            currentPavingManager.removePaving(cell.x, cell.y);
+          } else if (selection.selectedPaving) {
+            currentPavingManager.placePaving(cell.x, cell.y, selection.selectedPaving);
+          }
+        });
+      }
       setPreviewPavingCells([]);
       render();
     }
@@ -565,7 +641,7 @@ export const PlannerCanvas: React.FC<any> = ({
     // Handle double-click detection for opening interiors
     const currentTime = Date.now();
     const clickedItem = activeInteriorId ? 
-      interiorManager.getInterior(activeInteriorId)?.getGridManager().getItemAt(pos.x, pos.y) :
+      interiorManager.getInterior(activeInteriorId)?.getGridManager(activeFloor)?.getItemAt(pos.x, pos.y) :
       gridManager.getItemAt(pos.x, pos.y);
     
     const isDoubleClick = (currentTime - lastClickTime < 300) && 
@@ -598,8 +674,8 @@ export const PlannerCanvas: React.FC<any> = ({
       return;
     }
 
-    // Handle line tool for fences/walls/palisades
-    if (selection.selectedBuildable && selection.selectedBuildable.usesLineTool) {
+    // Handle line tool for fences/walls/palisades (not in interior mode)
+    if (!activeInteriorId && selection.selectedBuildable && selection.selectedBuildable.usesLineTool) {
       if (!selection.lineTool.isActive()) {
         // Start new line
         selection.lineTool.startLine(pos);
@@ -844,6 +920,13 @@ export const PlannerCanvas: React.FC<any> = ({
     }
   };
 
+  // Get current interior info
+  const currentInterior = activeInteriorId ? interiorManager.getInterior(activeInteriorId) : null;
+  const allFloors = currentInterior?.getAllFloors() || [0];
+  const minFloor = Math.min(...allFloors);
+  const maxFloor = Math.max(...allFloors);
+  const showFloorNav = allFloors.length > 1;
+
   return (
     <div className="canvas-container" onWheel={handleContainerWheel}>
       {activeInteriorId && onCloseInterior && (
@@ -859,52 +942,100 @@ export const PlannerCanvas: React.FC<any> = ({
           </button>
         </div>
       )}
-      <canvas 
-        ref={canvasRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
-        onWheel={handleWheel}
-        onContextMenu={(e) => e.preventDefault()}
-        style={{ cursor: getCursorStyle() }}
-      />
+      <div style={{ display: 'flex', position: 'relative' }}>
+        <canvas 
+          ref={canvasRef}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleClick}
+          onWheel={handleWheel}
+          onContextMenu={(e) => e.preventDefault()}
+          style={{ cursor: getCursorStyle() }}
+        />
+        {activeInteriorId && showFloorNav && onFloorChange && (
+          <div className="interior-floor-nav">
+            <div className="floor-nav-title">{activeFloor === -1 ? 'Cellar' : activeFloor === 0 ? 'Ground Floor' : `Floor ${activeFloor + 1}`}</div>
+            <button 
+              className="floor-nav-button"
+              onClick={() => onFloorChange(Math.min(maxFloor, activeFloor + 1))}
+              disabled={activeFloor >= maxFloor}
+              title="Go up one floor"
+            >
+              ▲
+            </button>
+            <div className="floor-nav-indicator">
+              <div className="floor-number">{activeFloor === -1 ? 'B1' : activeFloor + 1}</div>
+              <div className="floor-total">/ {allFloors.length}</div>
+            </div>
+            <button 
+              className="floor-nav-button"
+              onClick={() => onFloorChange(Math.max(minFloor, activeFloor - 1))}
+              disabled={activeFloor <= minFloor}
+              title="Go down one floor"
+            >
+              ▼
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export const InfoPanel: React.FC<any> = ({ selection, gridManager, pavingManager, measurementTool, render, onStateChange, hoverPosition }) => {
+export const InfoPanel: React.FC<any> = ({ selection, gridManager, pavingManager, interiorManager, measurementTool, render, onStateChange, hoverPosition, activeInteriorId, activeFloor }) => {
   const handleDelete = () => {
     if (selection.selectedPlaced) {
       if (onStateChange) onStateChange();
-      gridManager.removeItem(selection.selectedPlaced);
-      selection.selectPlaced(null);
-      render();
+      // Get the appropriate grid manager (interior or main)
+      const currentGridManager = activeInteriorId ? 
+        interiorManager.getInterior(activeInteriorId)?.getGridManager(activeFloor || 0) :
+        gridManager;
+      if (currentGridManager) {
+        currentGridManager.removeItem(selection.selectedPlaced);
+        selection.selectPlaced(null);
+        render();
+      }
     }
   };
 
   const handleDeleteMultiple = () => {
     if (selection.selectedPlacedItems && selection.selectedPlacedItems.length > 0) {
       if (onStateChange) onStateChange();
-      selection.selectedPlacedItems.forEach((item: any) => {
-        gridManager.removeItem(item);
-      });
-      selection.selectMultiplePlaced([]);
-      render();
+      // Get the appropriate grid manager (interior or main)
+      const currentGridManager = activeInteriorId ? 
+        interiorManager.getInterior(activeInteriorId)?.getGridManager(activeFloor || 0) :
+        gridManager;
+      if (currentGridManager) {
+        selection.selectedPlacedItems.forEach((item: any) => {
+          currentGridManager.removeItem(item);
+        });
+        selection.selectMultiplePlaced([]);
+        render();
+      }
     }
   };
 
   const handleRotate = () => {
-    if (selection.selectedPlaced && gridManager.rotateItem(selection.selectedPlaced)) {
-      if (onStateChange) onStateChange();
-      render();
+    if (selection.selectedPlaced) {
+      // Get the appropriate grid manager (interior or main)
+      const currentGridManager = activeInteriorId ? 
+        interiorManager.getInterior(activeInteriorId)?.getGridManager(activeFloor || 0) :
+        gridManager;
+      if (currentGridManager && currentGridManager.rotateItem(selection.selectedPlaced)) {
+        if (onStateChange) onStateChange();
+        render();
+      }
     }
   };
 
   // Get hover info
-  const hoverBuildable = hoverPosition ? gridManager.getItemAt(hoverPosition.x, hoverPosition.y) : null;
-  const hoverPaving = hoverPosition ? pavingManager.getPavingAt(hoverPosition.x, hoverPosition.y) : null;
+  const currentGridManager = activeInteriorId ? 
+    interiorManager.getInterior(activeInteriorId)?.getGridManager(activeFloor || 0) :
+    gridManager;
+  const hoverBuildable = hoverPosition && currentGridManager ? currentGridManager.getItemAt(hoverPosition.x, hoverPosition.y) : null;
+  const hoverPaving = hoverPosition && !activeInteriorId ? pavingManager.getPavingAt(hoverPosition.x, hoverPosition.y) : null;
 
   // Determine buildable display
   let buildableDisplay = 'None';
